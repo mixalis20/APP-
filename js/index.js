@@ -21,8 +21,7 @@ async function runObjectDetection() {
         const predictions = await model.detect(img);
         console.log(predictions);
 
-        // Ζωγραφίζουμε τα αποτελέσματα στον καμβά και αποθηκεύουμε τα δεδομένα στο JSON
-        const jsonOutput = [];
+        // Ζωγραφίζουμε τα αποτελέσματα στον καμβά
         predictions.forEach(prediction => {
             // Σχεδιάζουμε ένα πλαίσιο γύρω από το ανιχνευμένο αντικείμενο
             ctx.beginPath();
@@ -31,24 +30,23 @@ async function runObjectDetection() {
             ctx.strokeStyle = 'red';
             ctx.fillStyle = 'red';
             ctx.stroke();
+
+            // Σχεδιάζουμε το label πάνω στο πλαίσιο
             ctx.fillText(
                 `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
                 prediction.bbox[0],
                 prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
             );
-
-            // Προσθήκη των αποτελεσμάτων στο JSON
-            jsonOutput.push({
-                label: prediction.class,
-                score: prediction.score,
-                bbox: prediction.bbox
-            });
         });
-
-        // Εμφανίζουμε τα δεδομένα του JSON στην οθόνη
-        document.getElementById('json-output').textContent = JSON.stringify(jsonOutput, null, 2);
     };
 }
 
 // Καλούμε τη συνάρτηση όταν φορτώσει το DOM
 document.addEventListener('DOMContentLoaded', runObjectDetection);
+const img = document.getElementById('input-image');
+img.onload = async () => {
+    console.log("Εικόνα φορτώθηκε επιτυχώς.");
+    await runObjectDetection(img);
+};
+
+

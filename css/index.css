@@ -1,15 +1,17 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
+    width: 500px;
+    
 }
 .image-container {
     position: relative;
     display: inline-block;
 }
-#canvas {
+canvas  {
     position: absolute;
-    top: 0;
-    left: 0;
+    width: 500px;
+    justify-content: center;
 }
 .output {
     margin-top: 20px;
@@ -19,4 +21,8 @@ body {
     white-space: pre-wrap;
     font-family: monospace;
     text-align: left;
+}
+#input-image{
+    width: 500px;
+    left: 20px;
 }

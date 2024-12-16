@@ -3,24 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" src="/css/index.css">
-    <title>Object Detection με TensorFlow.js</title>
-</head>
-<body>
-    <h1>Object Detection με TensorFlow.js</h1>
-    <div class="image-container">
-        <img id="input-image" src="https://via.placeholder.com/500" alt="Input Image" width="500" />
-        <canvas id="canvas"></canvas>
-    </div>
-    <div class="output">
-        <h2>Ανιχνευμένα Αντικείμενα:</h2>
-        <pre id="json-output">Δεν υπάρχουν δεδομένα</pre>
-    </div>
+    <link rel="stylesheet" href="/css/index.css">
+    <title>Object Detection</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-    <script src="/js/index.js"></script>
+</head>
+<body>
+    <h1>Object Detection με COCO-SSD</h1>
+    <img id="input-image" src="/images/image2.jpg" alt="Input Image" />
+    <canvas id="canvas"></canvas>
+    <script>
+        async function runObjectDetection(img) {
+            // Φόρτωση του μοντέλου COCO-SSD
+            const model = await cocoSsd.load();
+            console.log("Μοντέλο φορτώθηκε.");
+
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            ctx.drawImage(img, 0, 0);
+
+            // Εκτέλεση ανίχνευσης αντικειμένων
+            const predictions = await model.detect(img);
+            console.log("Αποτελέσματα Ανίχνευσης: ", predictions); // Έλεγχος των αποτελεσμάτων
+
+            // Φιλτράρισμα αποτελεσμάτων (μόνο αντικείμενα με σκορ > 0.5)
+            const filteredPredictions = predictions.filter(prediction => prediction.score > 0.5);
+
+            if (filteredPredictions.length === 0) {
+                console.log("Δεν βρέθηκαν αντικείμενα στην εικόνα.");
+            } else {
+                filteredPredictions.forEach(prediction => {
+                    ctx.beginPath();
+                    ctx.rect(prediction.bbox[0], prediction.bbox[1], prediction.bbox[2], prediction.bbox[3]);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = 'red';
+                    ctx.stroke();
+
+                    ctx.fillText(
+                        `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
+                        prediction.bbox[0],
+                        prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
+                    );
+                });
+            }
+        }
+
+        const img = document.getElementById('input-image');
+        img.onload = () => runObjectDetection(img);
+    </script>
 </body>
 </html>
+
+
 
 
 
