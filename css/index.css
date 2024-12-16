@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.output {
+    margin-top: 20px;
+    text-align: left;
+}
+#json-output {
+    white-space: pre-wrap;
+    font-family: monospace;
+    text-align: left;
+}

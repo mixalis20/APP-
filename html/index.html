@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" src="/css/index.css">
+    <title>Object Detection με TensorFlow.js</title>
+</head>
+<body>
+    <h1>Object Detection με TensorFlow.js</h1>
+    <div class="image-container">
+        <img id="input-image" src="https://via.placeholder.com/500" alt="Input Image" width="500" />
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="output">
+        <h2>Ανιχνευμένα Αντικείμενα:</h2>
+        <pre id="json-output">Δεν υπάρχουν δεδομένα.</pre>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <script src="/js/index.js"></script>
+</body>
+</html>
+
+
+
+
