@@ -10,7 +10,7 @@ body {
 }
 canvas  {
     position: absolute;
-    width: 500px;
+    width: 600px;
     justify-content: center;
 }
 .output {
