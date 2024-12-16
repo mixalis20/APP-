@@ -9,19 +9,22 @@ selectImage.addEventListener('click', function(){
 })
 
 function updateImage(event){
-    console.log("Updated")
 }
 
 inputFile.addEventListener("change",function(event){
-    console.log("updated",event.target.value)
 
+    const image = this.files[0];
     const file = event.target.files[0];
     const reader = new FileReader();
     if (file && file instanceof Blob){
    
     reader.onload = function(e) {
+        const imgUrl = reader.result
         const dataUrl = e.target.result; 
-        console.log(dataUrl);
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        imgArea.appendChild(img);
+        imgArea.classList.add('active');
     };
 } 
     if (file instanceof Blob) {
