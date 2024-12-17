@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ανίχνευση Αντικειμένων </title>
+    <title>Ανίχνευση Αντικειμένων με TensorFlow.js</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,13 +21,45 @@
             margin-top: 20px;
             border: 2px solid #ddd;
         }
+        #editButton, #saveButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #editButton:hover, #saveButton:hover {
+            background-color: #45a049;
+        }
+        #canvas {
+            border: 1px solid #ddd;
+            cursor: crosshair;
+        }
+        #descriptionInput {
+            margin-top: 10px;
+            padding: 5px;
+            width: 200px;
+        }
     </style>
 </head>
 <body>
-    <h1>Ανίχνευση Αντικειμένων </h1>
+    <h1>Ανίχνευση Αντικειμένων με TensorFlow.js</h1>
 
     <!-- Επιλογή εικόνας -->
     <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload()">
+    <br><br>
+
+    <!-- Κουμπί για επεξεργασία -->
+    <button id="editButton" onclick="enableEditing()" disabled>Επεξεργασία</button>
+    <br><br>
+
+    <!-- Πεδίο για περιγραφή -->
+    <input type="text" id="descriptionInput" placeholder="Προσθήκη περιγραφής" disabled>
+    <br><br>
+
+    <!-- Κουμπί για αποθήκευση σε JSON -->
+    <button id="saveButton" onclick="saveAsJson()" disabled>Αποθήκευση JSON</button>
     <br><br>
 
     <!-- Εικόνα με αποτελέσματα -->
@@ -38,8 +70,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 
     <script>
-        // Φόρτωμα του μοντέλου Coco-SSD
         let model;
+        let img = new Image();
+        let predictions = [];
+        let isEditing = false;
+        let startX, startY, currentX, currentY;
+        let userBoxes = []; // Θα αποθηκεύσουμε τα χειροκίνητα bounding boxes του χρήστη
+        let imageCount = 0; // Για να ξεχωρίζουμε τις εικόνες
+        let selectedBoxIndex = -1; // Επιλεγμένο bounding box για επεξεργασία περιγραφής
+
+        // Φόρτωμα του μοντέλου Coco-SSD
         cocoSsd.load().then((loadedModel) => {
             model = loadedModel;
             console.log("Model loaded");
@@ -49,7 +89,6 @@
         async function handleImageUpload() {
             const imageInput = document.getElementById("imageInput");
             const file = imageInput.files[0];
-            const img = new Image();
             img.src = URL.createObjectURL(file);
 
             img.onload = async () => {
@@ -64,9 +103,7 @@
                 ctx.drawImage(img, 0, 0);
 
                 // Ανίχνευση αντικειμένων με το μοντέλο
-                const predictions = await model.detect(img);
-
-                // Σχεδίαση των περιγραμμάτων γύρω από τα αντικείμενα
+                predictions = await model.detect(img);
                 predictions.forEach(prediction => {
                     ctx.beginPath();
                     ctx.rect(
@@ -85,7 +122,171 @@
                         prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
                     );
                 });
+
+                // Ενεργοποιούμε το κουμπί Edit και Save μόλις φορτωθεί η εικόνα
+                document.getElementById("editButton").disabled = false;
+                document.getElementById("saveButton").disabled = false;
             };
+        }
+
+        // Ενεργοποίηση επεξεργασίας
+        function enableEditing() {
+            isEditing = !isEditing;
+            const canvas = document.getElementById("canvas");
+
+            if (isEditing) {
+                // Ενεργοποίηση της επεξεργασίας: Ενεργοποιούμε το "drawing mode"
+                canvas.addEventListener('mousedown', startDrawing);
+                canvas.addEventListener('mousemove', drawBoundingBox);
+                canvas.addEventListener('mouseup', finishDrawing);
+                document.getElementById("editButton").textContent = "Ακύρωση Επεξεργασίας";
+                document.getElementById("descriptionInput").disabled = false;
+            } else {
+                // Απενεργοποιούμε την επεξεργασία
+                canvas.removeEventListener('mousedown', startDrawing);
+                canvas.removeEventListener('mousemove', drawBoundingBox);
+                canvas.removeEventListener('mouseup', finishDrawing);
+                document.getElementById("editButton").textContent = "Επεξεργασία";
+                document.getElementById("descriptionInput").disabled = true;
+            }
+        }
+
+        // Αρχή του σχεδίου του bounding box
+        function startDrawing(event) {
+            const canvas = document.getElementById("canvas");
+            startX = event.offsetX;
+            startY = event.offsetY;
+        }
+
+        // Σχεδίαση του bounding box
+        function drawBoundingBox(event) {
+            if (!isEditing) return;
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            currentX = event.offsetX;
+            currentY = event.offsetY;
+
+            // Καθαρισμός του καμβά και επανασχεδίαση των αντικειμένων
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            predictions.forEach(prediction => {
+                ctx.beginPath();
+                ctx.rect(
+                    prediction.bbox[0],
+                    prediction.bbox[1],
+                    prediction.bbox[2],
+                    prediction.bbox[3]
+                );
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "red";
+                ctx.fillStyle = "red";
+                ctx.stroke();
+                ctx.fillText(
+                    `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
+                    prediction.bbox[0],
+                    prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
+                );
+            });
+
+            // Σχεδίαση του νέου bounding box του χρήστη
+            ctx.beginPath();
+            ctx.rect(startX, startY, currentX - startX, currentY - startY);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'blue';
+            ctx.stroke();
+        }
+
+        // Ολοκλήρωση του σχεδίου του bounding box
+        function finishDrawing(event) {
+            if (!isEditing) return;
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            const description = document.getElementById("descriptionInput").value || prompt("Προσθήκη περιγραφής:");
+
+            // Αποθήκευση του bounding box, της ετικέτας και της περιγραφής
+            if (description) {
+                const userBox = {
+                    x: startX,
+                    y: startY,
+                    width: currentX - startX,
+                    height: currentY - startY,
+                    description: description
+                };
+                userBoxes.push(userBox);
+            }
+
+            // Καθαρισμός του καμβά και επανασχεδίαση όλων των στοιχείων
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            predictions.forEach(prediction => {
+                ctx.beginPath();
+                ctx.rect(
+                    prediction.bbox[0],
+                    prediction.bbox[1],
+                    prediction.bbox[2],
+                    prediction.bbox[3]
+                );
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "red";
+                ctx.fillStyle = "red";
+                ctx.stroke();
+                ctx.fillText(
+                    `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
+                    prediction.bbox[0],
+                    prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
+                );
+            });
+
+            // Σχεδίαση όλων των χειροκίνητων bounding boxes με την περιγραφή
+            userBoxes.forEach((box) => {
+                ctx.beginPath();
+                ctx.rect(box.x, box.y, box.width, box.height);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'blue';
+                ctx.stroke();
+                ctx.fillText(box.description, box.x, box.y > 10 ? box.y - 5 : 10);
+            });
+        }
+
+        // Αποθήκευση σε JSON
+        function saveAsJson() {
+            const canvas = document.getElementById("canvas");
+            const imageData = {
+                imageId: `image_${imageCount++}`, 
+                image: canvas.toDataURL("image/png"),
+            };
+            
+            const objectData = {
+                imageId: `image_${imageCount}`,
+                detections: predictions,
+                user_boxes: userBoxes
+            };
+
+            // Δημιουργία δύο αρχείων JSON
+
+            // 1. Αποθήκευση δεδομένων εικόνας
+            const imageJson = JSON.stringify(imageData, null, 2);
+            const imageBlob = new Blob([imageJson], { type: 'application/json' });
+            const imageUrl = URL.createObjectURL(imageBlob);
+
+            const imageLink = document.createElement('a');
+            imageLink.href = imageUrl;
+            imageLink.download = `image_data_image_${imageCount}.json`;
+            document.body.appendChild(imageLink);
+            imageLink.click();
+            document.body.removeChild(imageLink);
+
+            // 2. Αποθήκευση δεδομένων αντικειμένων
+            const objectJson = JSON.stringify(objectData, null, 2);
+            const objectBlob = new Blob([objectJson], { type: 'application/json' });
+            const objectUrl = URL.createObjectURL(objectBlob);
+
+            const objectLink = document.createElement('a');
+            objectLink.href = objectUrl;
+            objectLink.download = `object_data_image_${imageCount}.json`;
+            document.body.appendChild(objectLink);
+            objectLink.click();
+            document.body.removeChild(objectLink);
         }
     </script>
 </body>
