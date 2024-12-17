@@ -1,293 +1,232 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ανίχνευση Αντικειμένων με TensorFlow.js</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            background-color: #f4f4f9;
-        }
-        #imageInput {
-            margin: 20px 0;
-        }
-        #resultImage {
-            max-width: 90%;
-            margin-top: 20px;
-            border: 2px solid #ddd;
-        }
-        #editButton, #saveButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        #editButton:hover, #saveButton:hover {
-            background-color: #45a049;
-        }
-        #canvas {
-            border: 1px solid #ddd;
-            cursor: crosshair;
-        }
-        #descriptionInput {
-            margin-top: 10px;
-            padding: 5px;
-            width: 200px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual Object Annotation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #controls {
+      margin-bottom: 20px;
+    }
+    #canvas {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      cursor: crosshair;
+    }
+    input[type="file"] {
+      margin-top: 20px;
+    }
+    input[type="text"] {
+      margin-top: 10px;
+      padding: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Ανίχνευση Αντικειμένων με TensorFlow.js</h1>
+  <h1>Manual Object Annotation</h1>
+  
+  <!-- Buttons at the top -->
+  <div id="controls">
+    <button id="saveImageInfoButton">Save Image Information</button>
+    <button id="saveAnnotationsButton">Save Annotations and Objects</button>
+  </div>
+  
+  <input type="file" id="upload" accept="image/*">
+  <br><br>
+  <input type="text" id="objectTitle" placeholder="Enter object title (e.g., human, dog)" />
+  <br><br>
+  <input type="text" id="objectComment" placeholder="Enter object comment (optional)" />
+  <br><br>
+  <canvas id="canvas"></canvas>
 
-    <!-- Επιλογή εικόνας -->
-    <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload()">
-    <br><br>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 
-    <!-- Κουμπί για επεξεργασία -->
-    <button id="editButton" onclick="enableEditing()" disabled>Επεξεργασία</button>
-    <br><br>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let image = new Image();
+    let isDrawing = false;
+    let startX, startY, endX, endY;
+    let annotations = [];  // Array to store all manual annotations (with titles and comments)
+    let detectedObjects = [];  // Array to store detected objects
+    let model;
 
-    <!-- Πεδίο για περιγραφή -->
-    <input type="text" id="descriptionInput" placeholder="Προσθήκη περιγραφής" disabled>
-    <br><br>
+    // Load the TensorFlow.js model
+    cocoSsd.load().then(loadedModel => {
+      model = loadedModel;
+      console.log('Model loaded');
+    }).catch(err => {
+      console.error('Error loading model:', err);
+    });
 
-    <!-- Κουμπί για αποθήκευση σε JSON -->
-    <button id="saveButton" onclick="saveAsJson()" disabled>Αποθήκευση JSON</button>
-    <br><br>
-
-    <!-- Εικόνα με αποτελέσματα -->
-    <canvas id="canvas"></canvas>
-    
-    <!-- Φόρτωση TensorFlow.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-
-    <script>
-        let model;
-        let img = new Image();
-        let predictions = [];
-        let isEditing = false;
-        let startX, startY, currentX, currentY;
-        let userBoxes = []; // Θα αποθηκεύσουμε τα χειροκίνητα bounding boxes του χρήστη
-        let imageCount = 0; // Για να ξεχωρίζουμε τις εικόνες
-        let selectedBoxIndex = -1; // Επιλεγμένο bounding box για επεξεργασία περιγραφής
-
-        // Φόρτωμα του μοντέλου Coco-SSD
-        cocoSsd.load().then((loadedModel) => {
-            model = loadedModel;
-            console.log("Model loaded");
-        });
-
-        // Διαχείριση ανίχνευσης αντικειμένων
-        async function handleImageUpload() {
-            const imageInput = document.getElementById("imageInput");
-            const file = imageInput.files[0];
-            img.src = URL.createObjectURL(file);
-
-            img.onload = async () => {
-                const canvas = document.getElementById("canvas");
-                const ctx = canvas.getContext("2d");
-
-                // Ρύθμιση του καμβά για να ταιριάζει με το μέγεθος της εικόνας
-                canvas.width = img.width;
-                canvas.height = img.height;
-
-                // Σχεδίαση της εικόνας στον καμβά
-                ctx.drawImage(img, 0, 0);
-
-                // Ανίχνευση αντικειμένων με το μοντέλο
-                predictions = await model.detect(img);
-                predictions.forEach(prediction => {
-                    ctx.beginPath();
-                    ctx.rect(
-                        prediction.bbox[0],
-                        prediction.bbox[1],
-                        prediction.bbox[2],
-                        prediction.bbox[3]
-                    );
-                    ctx.lineWidth = 4;
-                    ctx.strokeStyle = "red";
-                    ctx.fillStyle = "red";
-                    ctx.stroke();
-                    ctx.fillText(
-                        `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
-                        prediction.bbox[0],
-                        prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
-                    );
-                });
-
-                // Ενεργοποιούμε το κουμπί Edit και Save μόλις φορτωθεί η εικόνα
-                document.getElementById("editButton").disabled = false;
-                document.getElementById("saveButton").disabled = false;
-            };
+    // Handle image upload
+    document.getElementById('upload').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          image.src = e.target.result;
         }
+        reader.readAsDataURL(file);
+      }
+    });
 
-        // Ενεργοποίηση επεξεργασίας
-        function enableEditing() {
-            isEditing = !isEditing;
-            const canvas = document.getElementById("canvas");
+    // When the image is loaded
+    image.onload = function() {
+      canvas.width = image.width;
+      canvas.height = image.height;
 
-            if (isEditing) {
-                // Ενεργοποίηση της επεξεργασίας: Ενεργοποιούμε το "drawing mode"
-                canvas.addEventListener('mousedown', startDrawing);
-                canvas.addEventListener('mousemove', drawBoundingBox);
-                canvas.addEventListener('mouseup', finishDrawing);
-                document.getElementById("editButton").textContent = "Ακύρωση Επεξεργασίας";
-                document.getElementById("descriptionInput").disabled = false;
-            } else {
-                // Απενεργοποιούμε την επεξεργασία
-                canvas.removeEventListener('mousedown', startDrawing);
-                canvas.removeEventListener('mousemove', drawBoundingBox);
-                canvas.removeEventListener('mouseup', finishDrawing);
-                document.getElementById("editButton").textContent = "Επεξεργασία";
-                document.getElementById("descriptionInput").disabled = true;
-            }
-        }
+      // Draw the image on the canvas
+      ctx.drawImage(image, 0, 0);
 
-        // Αρχή του σχεδίου του bounding box
-        function startDrawing(event) {
-            const canvas = document.getElementById("canvas");
-            startX = event.offsetX;
-            startY = event.offsetY;
-        }
+      // Run object detection (TensorFlow.js)
+      detectObjects();
+    };
 
-        // Σχεδίαση του bounding box
-        function drawBoundingBox(event) {
-            if (!isEditing) return;
-            const canvas = document.getElementById("canvas");
-            const ctx = canvas.getContext("2d");
-            currentX = event.offsetX;
-            currentY = event.offsetY;
+    // Handle mouse events to draw rectangles
+    canvas.addEventListener('mousedown', (e) => {
+      isDrawing = true;
+      startX = e.offsetX;
+      startY = e.offsetY;
+    });
 
-            // Καθαρισμός του καμβά και επανασχεδίαση των αντικειμένων
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-            predictions.forEach(prediction => {
-                ctx.beginPath();
-                ctx.rect(
-                    prediction.bbox[0],
-                    prediction.bbox[1],
-                    prediction.bbox[2],
-                    prediction.bbox[3]
-                );
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = "red";
-                ctx.fillStyle = "red";
-                ctx.stroke();
-                ctx.fillText(
-                    `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
-                    prediction.bbox[0],
-                    prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
-                );
-            });
+    canvas.addEventListener('mousemove', (e) => {
+      if (isDrawing) {
+        endX = e.offsetX;
+        endY = e.offsetY;
+        drawRect(startX, startY, endX, endY);
+      }
+    });
 
-            // Σχεδίαση του νέου bounding box του χρήστη
-            ctx.beginPath();
-            ctx.rect(startX, startY, currentX - startX, currentY - startY);
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'blue';
-            ctx.stroke();
-        }
+    canvas.addEventListener('mouseup', (e) => {
+      isDrawing = false;
+      // Get the object title and comment from the input fields
+      const title = document.getElementById('objectTitle').value || "Untitled";
+      const comment = document.getElementById('objectComment').value || "No comment";
+      
+      // Save the annotation (rectangle coordinates, title, and comment)
+      annotations.push({ 
+        x: startX, 
+        y: startY, 
+        width: endX - startX, 
+        height: endY - startY, 
+        title: title,
+        comment: comment
+      });
+      console.log(annotations); // Log annotations to the console
+      drawAnnotations();  // Redraw all annotations
+    });
 
-        // Ολοκλήρωση του σχεδίου του bounding box
-        function finishDrawing(event) {
-            if (!isEditing) return;
-            const canvas = document.getElementById("canvas");
-            const ctx = canvas.getContext("2d");
-            const description = document.getElementById("descriptionInput").value || prompt("Προσθήκη περιγραφής:");
+    // Function to draw a rectangle
+    function drawRect(x, y, x2, y2) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+      ctx.drawImage(image, 0, 0); // Redraw the image
+      drawDetectedObjects();  // Redraw detected objects
+      drawAnnotations();  // Redraw manual annotations
 
-            // Αποθήκευση του bounding box, της ετικέτας και της περιγραφής
-            if (description) {
-                const userBox = {
-                    x: startX,
-                    y: startY,
-                    width: currentX - startX,
-                    height: currentY - startY,
-                    description: description
-                };
-                userBoxes.push(userBox);
-            }
+      ctx.beginPath();
+      ctx.rect(x, y, x2 - x, y2 - y); // Draw the rectangle
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'red';
+      ctx.stroke();
+    }
 
-            // Καθαρισμός του καμβά και επανασχεδίαση όλων των στοιχείων
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-            predictions.forEach(prediction => {
-                ctx.beginPath();
-                ctx.rect(
-                    prediction.bbox[0],
-                    prediction.bbox[1],
-                    prediction.bbox[2],
-                    prediction.bbox[3]
-                );
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = "red";
-                ctx.fillStyle = "red";
-                ctx.stroke();
-                ctx.fillText(
-                    `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
-                    prediction.bbox[0],
-                    prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
-                );
-            });
+    // Function to draw all annotations (including titles and comments)
+    function drawAnnotations() {
+      annotations.forEach(annotation => {
+        ctx.beginPath();
+        ctx.rect(annotation.x, annotation.y, annotation.width, annotation.height);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'red';
+        ctx.stroke();
 
-            // Σχεδίαση όλων των χειροκίνητων bounding boxes με την περιγραφή
-            userBoxes.forEach((box) => {
-                ctx.beginPath();
-                ctx.rect(box.x, box.y, box.width, box.height);
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = 'blue';
-                ctx.stroke();
-                ctx.fillText(box.description, box.x, box.y > 10 ? box.y - 5 : 10);
-            });
-        }
+        // Draw the title of the annotation
+        ctx.fillStyle = 'red';
+        ctx.fillText(annotation.title, annotation.x, annotation.y > 10 ? annotation.y - 5 : 10); // Display object label
 
-        // Αποθήκευση σε JSON
-        function saveAsJson() {
-            const canvas = document.getElementById("canvas");
-            const imageData = {
-                imageId: `image_${imageCount++}`, 
-                image: canvas.toDataURL("image/png"),
-            };
-            
-            const objectData = {
-                imageId: `image_${imageCount}`,
-                detections: predictions,
-                user_boxes: userBoxes
-            };
+        // Draw the comment of the annotation
+        ctx.fillStyle = 'blue';
+        ctx.fillText("Comment: " + annotation.comment, annotation.x, annotation.y + annotation.height + 15); // Display object comment
+      });
+    }
 
-            // Δημιουργία δύο αρχείων JSON
+    // Function to draw detected objects (with TensorFlow.js)
+    function drawDetectedObjects() {
+      detectedObjects.forEach(obj => {
+        const [x, y, width, height] = obj.bbox;
+        ctx.beginPath();
+        ctx.rect(x, y, width, height);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'green';  // Use green color for detected objects
+        ctx.stroke();
+        ctx.fillStyle = 'green';
+        ctx.fillText(obj.class, x, y > 10 ? y - 5 : 10); // Display object label
+      });
+    }
 
-            // 1. Αποθήκευση δεδομένων εικόνας
-            const imageJson = JSON.stringify(imageData, null, 2);
-            const imageBlob = new Blob([imageJson], { type: 'application/json' });
-            const imageUrl = URL.createObjectURL(imageBlob);
+    // Function to run object detection and draw bounding boxes
+    function detectObjects() {
+      model.detect(image).then(predictions => {
+        console.log(predictions);  // Log predictions to console for debugging
+        detectedObjects = predictions;  // Save detected objects
 
-            const imageLink = document.createElement('a');
-            imageLink.href = imageUrl;
-            imageLink.download = `image_data_image_${imageCount}.json`;
-            document.body.appendChild(imageLink);
-            imageLink.click();
-            document.body.removeChild(imageLink);
+        // Redraw the image and detected objects
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0);
+        drawDetectedObjects();
+        drawAnnotations();
+      }).catch(err => {
+        console.error("Error during object detection:", err);
+      });
+    }
 
-            // 2. Αποθήκευση δεδομένων αντικειμένων
-            const objectJson = JSON.stringify(objectData, null, 2);
-            const objectBlob = new Blob([objectJson], { type: 'application/json' });
-            const objectUrl = URL.createObjectURL(objectBlob);
+    // Save image information (image data only)
+    document.getElementById('saveImageInfoButton').addEventListener('click', function() {
+      const imageData = {
+        image: image.src,
+        width: image.width,
+        height: image.height
+      };
 
-            const objectLink = document.createElement('a');
-            objectLink.href = objectUrl;
-            objectLink.download = `object_data_image_${imageCount}.json`;
-            document.body.appendChild(objectLink);
-            objectLink.click();
-            document.body.removeChild(objectLink);
-        }
-    </script>
+      const blob = new Blob([JSON.stringify(imageData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'image_info.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Save annotations and detected objects
+    document.getElementById('saveAnnotationsButton').addEventListener('click', function() {
+      const data = {
+        detectedObjects: detectedObjects,
+        manualAnnotations: annotations
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'annotations_objects.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  </script>
 </body>
 </html>
