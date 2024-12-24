@@ -18,7 +18,7 @@ body {
 
   h1 {
     font-size: 2.5rem;
-    color: #444;
+    color: white;
     margin-top: 20px;
     text-align: center;
   }
@@ -51,8 +51,8 @@ body {
   button {
     padding: 12px 25px;
     font-size: 16px;
-    background-color: #4CAF50;
-    color: white;
+    background-color: #170E00;
+    color: #6A4E26;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -60,7 +60,8 @@ body {
   }
 
   button:hover {
-    background-color: #45a049;
+    background-color: #846A44;
+    color: #301E04;
     transform: scale(1.05);
   }
 
@@ -198,7 +199,7 @@ body {
   /* Navbar Styling */
 #navbar {
     width: 100%;
-    background-color: #333;
+    background-color:#0E2032;
     position: fixed;  /* Κρατά το navbar στη θέση του */
     top: 0;
     left: 0;
@@ -208,27 +209,34 @@ body {
   
   #navbar ul {
     list-style: none;
+   
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
+   
   }
   
   #navbar ul li {
     margin: 0 10px;
+   
   }
   
   #navbar ul li a {
-    color: white;
+    color: #05121F;
     text-decoration: none;
     font-size: 18px;
     padding: 15px 20px;
     display: block;
+    background-color: #1C3045;
     transition: background-color 0.3s;
+    border-radius: 10px;
+    
   }
   
   #navbar ul li a:hover {
-    background-color: #4CAF50;
+    background-color: #05121F;
+    color: white;
     border-radius: 10px;
   }
   
