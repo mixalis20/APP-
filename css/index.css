@@ -199,7 +199,7 @@ body {
   /* Navbar Styling */
 #navbar {
     width: 100%;
-    background-color:#0E2032;
+    background-color:#061320;
     position: fixed;  /* Κρατά το navbar στη θέση του */
     top: 0;
     left: 0;
@@ -235,7 +235,7 @@ body {
   }
   
   #navbar ul li a:hover {
-    background-color: #05121F;
+    background-color: #0E4880;
     color: white;
     border-radius: 10px;
   }
