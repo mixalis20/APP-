@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <link rel="stylesheet" href="/css/gallery.css">
+</head>
+<body>
+    <h1> Image Gallery</h1>
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="/images/image.jpg" alt="Image 1" data-caption="Caption for Image 1">
+            <div class="caption">Caption for Image 1</div>
+        </div>
+        <div class="gallery-item">
+            <img src="/images/image2.jpg" alt="Image 2" data-caption="Caption for Image 2">
+            <div class="caption">Caption for Image 2</div>
+        </div>
+        <div class="gallery-item">
+            <img src="/images/image3.png" alt="Image 3" data-caption="Caption for Image 3">
+            <div class="caption">Caption for Image 3</div>
+        </div>
+        <div class="gallery-item">
+            <img src="/images/image4.webp" alt="Image 4" data-caption="Caption for Image 4">
+            <div class="caption">Caption for Image 4</div>
+        </div>
+        <div class="gallery-item">
+            <img src="/images/image5.jpg" alt="Image 5" data-caption="Caption for Image 5">
+            <div class="caption">Caption for Image 5</div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="close" onclick="closeLightbox()">&times;</span>
+        <img id="lightbox-img" src="" alt="">
+    </div>
+<script src="/js/gallery.js"></script>
+</body>
+</html>
