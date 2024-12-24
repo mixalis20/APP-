@@ -9,7 +9,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 100vh;
+    height: 100px;
     box-sizing: border-box;
   }
 
@@ -20,15 +20,30 @@ body {
     text-align: center;
   }
 
-  #controls {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    align-items: center;
+  .annotations-container {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 1000px;
+    padding: 25px;
+    box-sizing: border-box;
+    display: flex;                /* Ενεργοποιεί το Flexbox για τοποθέτηση σε γραμμή */
+    gap: 16px;                    /* Δημιουργεί κενό ανάμεσα στα πεδία */                             /* Αν χρειαστεί, τα πεδία θα τυλίγονται σε νέα γραμμή */
     justify-content: center;
-    flex-wrap: wrap;
+      /* Τοποθετεί τα πεδία στην αρχή της γραμμής */
   }
+  
+  .input-group {
+    flex: 1;                      /* Κάνει τα πεδία να έχουν το ίδιο μέγεθος */
+    max-width: 1000px;  
+    padding: 25px; 
+             /* Ορίζει ένα ελάχιστο πλάτος για τα πεδία */
+  }
+  
+  .input-group label {
+    display: block;               /* Κάνει τις ετικέτες να εμφανίζονται πάνω από τα πεδία */
+    margin-bottom: 5px;            /* Δημιουργεί κενό ανάμεσα στην ετικέτα και το πεδίο */
+  }
+  
 
   button {
     padding: 12px 25px;
@@ -77,9 +92,9 @@ body {
   }
 
   .annotations-container {
-    margin-top: 30px;
+    margin-top: 20px;
     width: 100%;
-    max-width: 650px;
+    max-width: 800px;
     padding: 10px;
     box-sizing: border-box;
   }
@@ -91,7 +106,7 @@ body {
   /* Canvas Styling */
   .canvas-container {
     position: relative;
-    margin-top: 30px;
+    margin-top: 20px;
     width: 100%;
     max-width: 800px;
     border-radius: 10px;
@@ -177,3 +192,60 @@ body {
   input[type="text"]:hover {
     border-color: #4CAF50;
   }
+  /* Navbar Styling */
+#navbar {
+    width: 100%;
+    background-color: #333;
+    position: fixed;  /* Κρατά το navbar στη θέση του */
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  #navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  #navbar ul li {
+    margin: 0 20px;
+  }
+  
+  #navbar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 15px 20px;
+    display: block;
+    transition: background-color 0.3s;
+  }
+  
+  #navbar ul li a:hover {
+    background-color: #4CAF50;
+    border-radius: 5px;
+  }
+  
+  body {
+    margin-top: 60px; /* Δημιουργεί απόσταση κάτω από το navbar */
+  }
+  
+  /* Responsive design for smaller screens */
+  @media (max-width: 768px) {
+    #navbar ul {
+      flex-direction: column;
+    }
+  
+    #navbar ul li {
+      margin: 10px 0;
+    }
+  
+    #navbar ul li a {
+      font-size: 16px;
+      padding: 10px;
+    }
+  }
+  
