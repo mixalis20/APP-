@@ -13,6 +13,7 @@ body {
     box-sizing: border-box;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    margin-top: 60px;
   }
 
   h1 {
@@ -214,7 +215,7 @@ body {
   }
   
   #navbar ul li {
-    margin: 0 20px;
+    margin: 0 10px;
   }
   
   #navbar ul li a {
@@ -228,12 +229,10 @@ body {
   
   #navbar ul li a:hover {
     background-color: #4CAF50;
-    border-radius: 5px;
+    border-radius: 10px;
   }
   
-  body {
-    margin-top: 60px; /* Δημιουργεί απόσταση κάτω από το navbar */
-  }
+ 
   
   /* Responsive design for smaller screens */
   @media (max-width: 768px) {
