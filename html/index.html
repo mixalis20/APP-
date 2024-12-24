@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manual Object Annotation</title>
   <style>
-   /* General Styles */
-   body {
+    /* General Styles */
+    body {
       font-family: 'Roboto', sans-serif;
       margin: 0;
       padding: 0;
@@ -221,9 +221,6 @@
     <div class="tooltip" id="tooltip"></div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-
   <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -232,16 +229,6 @@
     let isDrawing = false;
     let startX, startY, endX, endY;
     let annotations = [];  // Array to store all manual annotations (with titles and comments)
-    let detectedObjects = [];  // Array to store detected objects
-    let model;
-
-    // Load the TensorFlow.js model
-    cocoSsd.load().then(loadedModel => {
-      model = loadedModel;
-      console.log('Model loaded');
-    }).catch(err => {
-      console.error('Error loading model:', err);
-    });
 
     // Handle image upload
     document.getElementById('upload').addEventListener('change', (event) => {
@@ -260,7 +247,6 @@
       canvas.width = image.width;
       canvas.height = image.height;
       ctx.drawImage(image, 0, 0);
-      detectObjects();
     };
 
     // Handle mouse events to draw rectangles
@@ -299,11 +285,21 @@
     function drawRect(x, y, x2, y2) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(image, 0, 0);
-      drawDetectedObjects();
       drawAnnotations();
 
+      const width = x2 - x;
+      const height = y2 - y;
+
+      // Ensure we are drawing positive width and height
+      if (width < 0) {
+        x = x2;
+      }
+      if (height < 0) {
+        y = y2;
+      }
+
       ctx.beginPath();
-      ctx.rect(x, y, x2 - x, y2 - y);
+      ctx.rect(x, y, Math.abs(width), Math.abs(height));
       ctx.lineWidth = 2;
       ctx.strokeStyle = 'red';
       ctx.stroke();
@@ -323,33 +319,6 @@
 
         ctx.fillStyle = 'blue';
         ctx.fillText("Comment: " + annotation.comment, annotation.x, annotation.y + annotation.height + 15);
-      });
-    }
-
-    // Function to draw detected objects
-    function drawDetectedObjects() {
-      detectedObjects.forEach(obj => {
-        const [x, y, width, height] = obj.bbox;
-        ctx.beginPath();
-        ctx.rect(x, y, width, height);
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = 'green';
-        ctx.stroke();
-        ctx.fillStyle = 'green';
-        ctx.fillText(obj.class, x, y > 10 ? y - 5 : 10);
-      });
-    }
-
-    // Function to run object detection and draw bounding boxes
-    function detectObjects() {
-      model.detect(image).then(predictions => {
-        detectedObjects = predictions;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(image, 0, 0);
-        drawDetectedObjects();
-        drawAnnotations();
-      }).catch(err => {
-        console.error("Error during object detection:", err);
       });
     }
 
@@ -375,7 +344,6 @@
     // Save annotations and objects
     document.getElementById('saveAnnotationsButton').addEventListener('click', function() {
       const data = {
-        detectedObjects: detectedObjects,
         manualAnnotations: annotations
       };
 
