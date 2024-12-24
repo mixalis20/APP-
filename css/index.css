@@ -1,16 +1,18 @@
 /* General Styles */
 body {
-    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f7fb;
-    color: #333;
+    background: linear-gradient(to bottom, #2c3e50, #4ca1af); /* Από σκοτεινό μπλε σε φωτεινό μπλε */
+    color: white; /* Λευκό χρώμα κειμένου */
+    font-family: 'Verdana', sans-serif; /* Γραμματοσειρά για καλή ανάγνωση */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     height: 100px;
     box-sizing: border-box;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
 
   h1 {
@@ -249,3 +251,49 @@ body {
     }
   }
   
+  /* Στυλ για κουμπιά ελέγχου εικόνας */
+#imageControls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#imageControls button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#imageControls button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+#imageControls button:active {
+  transform: scale(1);
+}
+
+/* Στυλ για τον καμβά */
+.canvas-container {
+  position: relative;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  background-color: #fff;
+}
+
+#canvas {
+  width: 100%;
+  max-height: 500px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}

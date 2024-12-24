@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/index.css">
-  <title>Manual Object Annotation</title>
+  <title>Image Editor | Gallery</title>
 </head>
 <body> 
   <nav id="navbar">
@@ -13,7 +13,18 @@
       <li><a href="/html/index.html">Upload Image</a></li>
     </ul>
   </nav>
+
+  <!-- Controls για την εικόνα -->
+<div id="controls">
+  <button id="rotateButton">Rotate Image</button>
+  <button id="resizeButton">Resize Image</button>
+</div>
+
   <div class="annotations-container">
+    
+    <!-- Controls Section for Image Manipulation -->
+
+
     <!-- Upload Image Section -->
     <div class="input-group">
       <label class="input-label" for="upload">Upload Image:</label>
@@ -40,6 +51,6 @@
     <div class="tooltip" id="tooltip"></div>
   </div>
 
-  <script src="/js/index.js"></script>
+  <script src="/js/index.js" defer></script>
 </body>
 </html>
