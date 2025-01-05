@@ -1,3 +1,6 @@
+
+
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const tooltip = document.getElementById('tooltip');
@@ -5,6 +8,7 @@ let image = new Image();
 let isDrawing = false;
 let startX, startY, endX, endY;
 let annotations = [];  // Array to store all manual annotations (with titles and comments)
+
 
 // Handle image upload
 document.getElementById('upload').addEventListener('change', (event) => {
@@ -98,38 +102,72 @@ function drawAnnotations() {
   });
 }
 
-// Save image information
-document.getElementById('saveImageInfoButton').addEventListener('click', function() {
-  const imageData = {
-    image: image.src,
-    width: image.width,
-    height: image.height
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const uploadInput = document.getElementById('upload');
+  const resizeButton = document.getElementById('resizeButton');
+  const saveButton = document.getElementById('saveButton');
+
+  let originalImage = new Image();
+  let imageLoaded = false; // Ελέγχουμε αν έχει φορτωθεί μια εικόνα
+
+  // Φόρτωση εικόνας από τον χρήστη
+  uploadInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+          const reader = new FileReader();
+
+          reader.onload = (e) => {
+              originalImage.src = e.target.result;
+          };
+
+          reader.readAsDataURL(file);
+      }
+  });
+
+  // Όταν η εικόνα φορτωθεί
+  originalImage.onload = () => {
+      canvas.width = originalImage.width;
+      canvas.height = originalImage.height;
+      ctx.drawImage(originalImage, 0, 0);
+      imageLoaded = true; // Σημειώνουμε ότι η εικόνα έχει φορτωθεί
   };
 
-  const blob = new Blob([JSON.stringify(imageData, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'image_info.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  // Ενέργεια στο κουμπί "Resize Image"
+  resizeButton.addEventListener('click', () => {
+      if (!imageLoaded) {
+          alert('Please upload an image first!');
+          return;
+      }
+
+      const newWidth = parseInt(prompt('Enter new width:', canvas.width));
+      const newHeight = parseInt(prompt('Enter new height:', canvas.height));
+
+      if (newWidth > 0 && newHeight > 0) {
+          canvas.width = newWidth;
+          canvas.height = newHeight;
+          ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+      } else {
+          alert('Invalid dimensions entered.');
+      }
+  });
+
+  // Ενέργεια στο κουμπί "Save Image"
+  saveButton.addEventListener('click', () => {
+      if (!imageLoaded) {
+          alert('Please upload an image first!');
+          return;
+      }
+
+      const downloadLink = document.createElement('a');
+      downloadLink.href = canvas.toDataURL('image/png');
+      downloadLink.download = 'resized-image.png';
+      downloadLink.click();
+  });
 });
 
-// Save annotations and objects
-document.getElementById('saveAnnotationsButton').addEventListener('click', function() {
-  const data = {
-    manualAnnotations: annotations
-  };
-
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'annotations_objects.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-});
