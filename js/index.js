@@ -180,6 +180,8 @@ document.getElementById('saveButton').addEventListener('click', async function()
     }
 });
 
+
+
 async function fetchImages() {
     try {
         const response = await fetch('http://localhost:8000/api/images');
@@ -199,6 +201,4 @@ async function fetchImages() {
     }
 }
 
-// Καλέστε την function όταν φορτωθεί η σελίδα
 window.onload = fetchImages;
-
