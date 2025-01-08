@@ -30,6 +30,6 @@ database.once("connected", () => {
 router.use('/api/images', imagesRouter);
 
 // Εκκίνηση του server
-router.listen(8000, () => {
-    console.log(`Server started at http://localhost:8000`);
+router.listen(5501, () => {
+    console.log(`Server started at http://localhost:5501`);
 });
