@@ -1,7 +1,9 @@
 var express = require("express");
 var mongoose = require("mongoose");
 var cors = require("cors");
+require("dotenv").config();
 
+var DBString = process.env.DATABASE_URL;
 
 
 // Set up an express app
