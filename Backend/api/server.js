@@ -1,35 +1,78 @@
-var express = require("express");
-var mongoose = require("mongoose");
-var cors = require("cors");  // Εισαγωγή του cors
-require("dotenv").config();
+const express = require('express');
+const mongoose = require('mongoose');
+const multer = require('multer');
+const cors = require('cors');
+const path = require('path');
+const dotenv = require('dotenv');
+const Image = require('./models/image'); // Αφορά το μοντέλο για τις εικόνες
 
-var DBString = process.env.DATABASE_URL;  // Σύνδεση με τη βάση δεδομένων
+dotenv.config();
 
-var router = express();
-var imagesRouter = require('./routes/image');
+const app = express();
+const port = 8000;
 
-// Χρησιμοποιούμε το middleware cors για να επιτρέψουμε τα CORS αιτήματα
-router.use(cors());  // Αυτό επιτρέπει όλα τα origins (π.χ., το frontend στον browser)
+// Middleware
+app.use(express.json());
+app.use(cors());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Εξυπηρετεί εικόνες από το φάκελο uploads
 
-// Middleware για να παραλάβει JSON δεδομένα
-router.use(express.json());
+// Σύνδεση με τη βάση δεδομένων MongoDB
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.log(err));
 
-// Σύνδεση με τη βάση δεδομένων
-mongoose.connect(DBString, { useNewUrlParser: true, useUnifiedTopology: true });
-var database = mongoose.connection;
-
-database.on("error", (error) => {
-    console.log(error);
+// Multer storage configuration για τις εικόνες
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // Ορίζει το όνομα του αρχείου
+    }
 });
 
-database.once("connected", () => {
-    console.log("Database connected");
+const upload = multer({ storage: storage });
+
+// Διαδρομή για την αποθήκευση εικόνας και annotation
+app.post('/api/uploads/create', upload.single('image'), async (req, res) => {
+    const { title, comment } = req.body;
+
+    if (!req.file) {
+        return res.status(400).json({ message: "Image is required" });
+    }
+
+    try {
+        const newImage = new Image({
+            title: title,
+            comment: comment,
+            imagePath: req.file.path // Αποθηκεύει την διαδρομή της εικόνας
+        });
+
+        await newImage.save();
+        res.status(201).json({ message: 'Image uploaded successfully', newImage });
+    } catch (error) {
+        console.error("Error saving image:", error);
+        res.status(500).json({ message: 'Error saving image' });
+    }
 });
 
-// Χρήση των routes για εικόνες
-router.use('api/images', imagesRouter);
+// Διαδρομή για την ανάκτηση όλων των εικόνων
+app.get('/api/images', async (req, res) => {
+    try {
+        const images = await Image.find();
+        const imagePaths = images.map(image => ({
+            title: image.title,
+            comment: image.comment,
+            imageUrl: `http://localhost:8000/${image.imagePath.split('uploads/')[1]}`  // Δημιουργία σωστής URL για την εικόνα
+        }));
+        res.json(imagePaths);
+    } catch (error) {
+        console.error('Error fetching images:', error);
+        res.status(500).json({ message: 'Error fetching images' });
+    }
+});
 
 // Εκκίνηση του server
-router.listen(8000, () => {
-    console.log(`Server started at http://localhost:8000`);
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
 });
