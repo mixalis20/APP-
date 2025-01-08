@@ -1,0 +1,15 @@
+{
+    "title": "Sample Image",
+    "type": "image/png",
+    "value": "sample_value",
+    "datetime": "2024-12-31T12:00:00",
+    "inspector": "Jane Doe",
+    "category": "Sample Category",
+    "criticality": "Low",
+    "tags": [
+        {
+            "id": 1,
+            "name": "cars"
+        }
+    ]
+}

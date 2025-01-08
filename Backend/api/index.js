@@ -1,5 +1,6 @@
 var express = require("express");
 var mongoose = require("mongoose");
+var cors = require("cors");
 require("dotenv").config();
 var DBString = process.env.DATABASE_URL;  // Get DB URL from environment variable
 
@@ -8,6 +9,7 @@ var router = express();
 var imagesRouter = require('./routes/image');
 
 // Middleware to parse JSON requests
+router.use(cors());
 router.use(express.json());  // Use express.json() to handle JSON request bodies
 
 // Database connection
