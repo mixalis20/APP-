@@ -144,16 +144,61 @@ resizeButton.addEventListener('click', () => {
     }
 });
 
-// Κουμπί αποθήκευσης εικόνας
-const saveButton = document.getElementById('saveButton');
-saveButton.addEventListener('click', () => {
-    if (!image.src) {
+document.getElementById('saveButton').addEventListener('click', async function() {
+    const imageFile = document.getElementById('upload').files[0];
+    const objectTitle = document.getElementById('objectTitle').value;
+    const objectComment = document.getElementById('objectComment').value;
+
+    if (!imageFile) {
         alert('Please upload an image first!');
         return;
     }
 
-    const downloadLink = document.createElement('a');
-    downloadLink.href = canvas.toDataURL('image/png');
-    downloadLink.download = 'annotated-image.png';
-    downloadLink.click();
+    // Δημιουργία FormData για να στείλεις την εικόνα και τα άλλα δεδομένα
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    formData.append('title', objectTitle);
+    formData.append('comment', objectComment);
+
+    try {
+        // Επιστροφή της εικόνας στο backend
+        const response = await fetch('http://localhost:8000/api/images/create', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Image uploaded successfully:', result);
+            alert('Image uploaded successfully!');
+        } else {
+            alert('Failed to upload image.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error uploading image.');
+    }
 });
+
+async function fetchImages() {
+    try {
+        const response = await fetch('http://localhost:8000/api/images');
+        const images = await response.json();
+
+        const galleryContainer = document.getElementById('gallery');
+        galleryContainer.innerHTML = ''; // Καθαρίζει την τρέχουσα gallery
+
+        images.forEach(image => {
+            const imgElement = document.createElement('img');
+            imgElement.src = image.value;  // Η τιμή της εικόνας είναι σε base64
+            galleryContainer.appendChild(imgElement);
+        });
+    } catch (error) {
+        console.error('Error fetching images:', error);
+        alert('Error fetching images');
+    }
+}
+
+// Καλέστε την function όταν φορτωθεί η σελίδα
+window.onload = fetchImages;
+
