@@ -1,15 +1,15 @@
 var express = require("express");
 var mongoose = require("mongoose");
-var cors = require("cors");
+var cors = require("cors");  // Εισαγωγή του cors
 require("dotenv").config();
 
-var DBString = process.env.DATABASE_URL;
+var DBString = process.env.DATABASE_URL;  // Σύνδεση με τη βάση δεδομένων
 
 var router = express();
 var imagesRouter = require('./routes/image');
 
-// Middleware για να επιτρέπει CORS
-router.use(cors());
+// Χρησιμοποιούμε το middleware cors για να επιτρέψουμε τα CORS αιτήματα
+router.use(cors());  // Αυτό επιτρέπει όλα τα origins (π.χ., το frontend στον browser)
 
 // Middleware για να παραλάβει JSON δεδομένα
 router.use(express.json());
