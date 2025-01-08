@@ -27,9 +27,9 @@ database.once("connected", () => {
 });
 
 // Χρήση των routes για εικόνες
-router.use('/api/images', imagesRouter);
+router.use('api/images', imagesRouter);
 
 // Εκκίνηση του server
-router.listen(5501, () => {
-    console.log(`Server started at http://localhost:5501`);
+router.listen(8000, () => {
+    console.log(`Server started at http://localhost:8000`);
 });
