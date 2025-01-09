@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="gallery.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Gallery</title>
+
+    <nav id="navbar">
+        <ul>
+          <li><a href="/frontend/gallery.html">Gallery</a></li>
+          <li><a href="/frontend/index.html">Upload Image</a></li>
+        </ul>
+      </nav>
+    <style>
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Gallery</h1>
+    <div id="gallery"></div>
+
+    <script>
+        // Fetch saved images
+        function fetchGallery() {
+            fetch('http://localhost:5000/api/images')
+                .then(response => {
+                    // Check if response is OK
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch gallery');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Gallery Data:', data); // Logging the data for debugging
+
+                    // Ensure the data is an array
+                    if (Array.isArray(data)) {
+                        const gallery = document.getElementById('gallery');
+                        gallery.innerHTML = '';
+
+                        data.forEach(item => {
+                            // Create the image element
+                            const imgElement = document.createElement('img');
+                            imgElement.src = item.image;
+                            imgElement.alt = "Image in Gallery";
+
+                            // Append image to the gallery
+                            gallery.appendChild(imgElement);
+                        });
+                    } else {
+                        console.log('Invalid data format:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching gallery:', error);
+                });
+        }
+
+        // Call function to load gallery content
+        fetchGallery();
+    </script>
+</body>
+</html>
