@@ -10,14 +10,23 @@
 
     <div class="navbar">
         <ul>
-            <li><a href="index.html"> Image</a></li>
-            <li><a href="gallery.html"> Gallery</a></li>
+            <li><a href="index.html">Image</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
         </ul>
     </div>
 
     <h1>Upload Image with Annotations</h1>
-    <input type="file" id="upload" accept="image/*">
-    <button id="saveButton">Save Image with Annotations</button>
+
+    <!-- Χρησιμοποιούμε container για την διάταξη του input και του κουμπιού -->
+    <div class="upload-container">
+        <!-- Εισαγωγή εικόνας -->
+        <input type="file" id="upload" accept="image/*">
+        
+        <!-- Κουμπί αποθήκευσης -->
+        <button id="saveButton">Save Image with Annotations</button>
+    </div>
+
+    <!-- Canvas για την εμφάνιση της εικόνας και των annotations -->
     <canvas id="canvas"></canvas>
 
     <script>
@@ -103,5 +112,6 @@
             }
         });
     </script>
+
 </body>
 </html>

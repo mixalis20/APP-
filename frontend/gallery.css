@@ -1,12 +1,18 @@
 body {
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(to bottom, #2c3e50, #4ca1af); /* Από σκοτεινό μπλε σε φωτεινό μπλε */
-    color: white; /* Λευκό χρώμα κειμένου */
-    font-family: 'Verdana', sans-serif; /* Γραμματοσειρά για καλή ανάγνωση */
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-   
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #2c3e50, #4ca1af); /* Από σκοτεινό μπλε σε φωτεινό μπλε */
+  color: white; /* Λευκό χρώμα κειμένου */
+  font-family: 'Verdana', sans-serif; /* Γραμματοσειρά για καλή ανάγνωση */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100px;
+  box-sizing: border-box;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin-top: 60px;
 }
 h1 {
     text-align: center;
