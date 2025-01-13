@@ -1,105 +1,71 @@
-body {
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(to bottom, #2c3e50, #4ca1af); /* Από σκοτεινό μπλε σε φωτεινό μπλε */
-  color: white; /* Λευκό χρώμα κειμένου */
-  font-family: 'Verdana', sans-serif; /* Γραμματοσειρά για καλή ανάγνωση */
+
+/* Gallery Styles */
+#gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.image-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border: 2px solid #ddd;
+  margin: 20px 0; /* Δημιουργεί χώρο πάνω και κάτω από την εικόνα */
+  padding: 10px;
+  border-radius: 10px; /* Στρογγυλεμένες γωνίες για καλύτερη εμφάνιση */
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ελαφρύ shadow για 3D effect */
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 15px; /* Δημιουργεί χώρο κάτω από την εικόνα */
+  border-radius: 5px;
+}
+
+.annotation {
+  position: absolute;
+  padding: 10px;
+  color: #007bff;
+  font-size: 14px;
+  border-radius: 5px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100px;
-  box-sizing: border-box;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  margin-top: 60px;
-}
-h1 {
-    text-align: center;
-    padding: 20px;
-    color: #fff;
-}
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    padding: 20px;
-}
-.gallery-item {
-    position: relative;
-    overflow: hidden;
-}
-.gallery img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-.gallery img:hover {
-    transform: scale(1.05);
-}
-.caption {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-}
-/* Lightbox styles */
-.lightbox {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-.lightbox img {
-    max-width: 90%;
-    max-height: 80%;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
-}
-.lightbox .close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 30px;
-    color: #fff;
-    cursor: pointer;
-    user-select: none;
+  justify-content: center;
+  gap: 5px;
 }
 
-  body {
-    margin-top: 60px; /* Δημιουργεί απόσταση κάτω από το navbar */
-  }
-  
-  /* Responsive design for smaller screens */
-  @media (max-width: 768px) {
-    #navbar ul {
-      flex-direction: column;
-    }
-  
-    #navbar ul li {
-      margin: 10px 0;
-    }
-  
-    #navbar ul li a {
-      font-size: 16px;
-      padding: 10px;
-    }
-  }
-
-img {
-     max-width: 500px; 
+.annotation h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #004085;
 }
-        
+
+.annotation p {
+  margin: 0;
+  font-size: 14px;
+  color: #003366;
+}
+
+
+
+/* Εφέ hover για την εικόνα */
+.image-container:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Αυξάνει το shadow κατά το hover */
+}
+
+/* Responsive design για μικρές οθόνες */
+@media (max-width: 768px) {
+  .image-container {
+      width: 100%; /* Οι εικόνες θα παίρνουν όλο το πλάτος της οθόνης */
+  }
+}

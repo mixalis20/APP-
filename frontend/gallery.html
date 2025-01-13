@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="gallery.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/frontend/gallery.css">
+    <link rel="stylesheet" href="/frontend/style.css">
     <title>Gallery</title>
 </head>
 <body>
 
     <div class="navbar">
         <ul>
-            <li><a href="index.html"> Image</a></li>
-            <li><a href="gallery.html"> Gallery</a></li>
+            <li><a href="index.html">Image</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
         </ul>
     </div>
     <h1>Image Gallery</h1>
@@ -24,29 +24,42 @@
                 const response = await fetch('http://localhost:5000/api/images');
                 const images = await response.json();
                 const galleryDiv = document.getElementById('gallery');
-                galleryDiv.innerHTML = '';
+                galleryDiv.innerHTML = ''; // Καθαρίζει την gallery
+
                 images.forEach(imageData => {
                     const container = document.createElement('div');
+                    container.classList.add('image-container');
+
+                    // Δημιουργία εικόνας
                     const img = document.createElement('img');
                     img.src = imageData.image;
                     container.appendChild(img);
+
+                    // Δημιουργία τίτλου και περιγραφής
                     imageData.annotations.forEach(annotation => {
                         const annotationDiv = document.createElement('div');
                         annotationDiv.classList.add('annotation');
-                        annotationDiv.style.width = `${annotation.width}px`;
-                        annotationDiv.style.height = `${annotation.height}px`;
-                        annotationDiv.style.left = `${annotation.x}px`;
-                        annotationDiv.style.top = `${annotation.y}px`;
-                        annotationDiv.textContent = `${annotation.title}`;
+
+                        const title = document.createElement('h3');
+                        title.textContent = annotation.title;
+                        annotationDiv.appendChild(title);
+
+                        const description = document.createElement('p');
+                        description.textContent = annotation.description;
+                        annotationDiv.appendChild(description);
+
                         container.appendChild(annotationDiv);
                     });
+
                     galleryDiv.appendChild(container);
                 });
             } catch (error) {
                 console.error('Error fetching gallery:', error);
             }
         }
+
         fetchGallery();
     </script>
+
 </body>
 </html>
