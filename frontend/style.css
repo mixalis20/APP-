@@ -159,4 +159,30 @@ h1 {
     padding: 10px;
   }
 }
+/* Στυλ για το resize inputs */
+#resizeInputs {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
 
+#resizeInputs input {
+  padding: 10px;
+  font-size: 14px;
+  width: 100px;
+}
+
+#resizeInputs button {
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+#resizeInputs button:hover {
+  background-color: #45a049;
+}

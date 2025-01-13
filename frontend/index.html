@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/frontend/style.css">
     <title>Upload Image with Annotations</title>
 </head>
 <body>
@@ -14,12 +14,26 @@
             <li><a href="gallery.html"> Gallery</a></li>
         </ul>
     </div>
-
     <h1>Upload Image with Annotations</h1>
-    <input type="file" id="upload" accept="image/*">
-    <button id="saveButton">Save Image with Annotations</button>
-    <canvas id="canvas"></canvas>
+    <div class="upload-container">
+        <!-- Εισαγωγή εικόνας -->
+        <input type="file" id="upload" accept="image/*">
+        
+        <!-- Κουμπί αποθήκευσης -->
+        <button id="saveButton">Save Image with Annotations</button>
 
+        <!-- Κουμπί Resize -->
+        <button id="resizeButton">Resize Image</button>
+
+        <!-- Εισαγωγή διαστάσεων για το resize -->
+        <div id="resizeInputs" style="display: none;">
+            <input type="number" id="newWidth" placeholder="New Width" min="1">
+            <input type="number" id="newHeight" placeholder="New Height" min="1">
+            <button id="applyResize">Apply Resize</button>
+        </div>
+    </div>
+<!-- Canvas για την εμφάνιση της εικόνας και των annotations -->
+<canvas id="canvas"></canvas>
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
