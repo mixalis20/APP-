@@ -3,25 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Upload Image with Annotations</title>
-    
+    <title>Image Upload & Annotation</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
 </head>
-<nav id="navbar">
-    <ul>
-      <li><a href="/frontend/gallery.html">Gallery</a></li>
-      <li><a href="/frontend/index.html">Upload Image</a></li>
-    </ul>
-  </nav>
 <body>
-    <h1>Upload Image and Add Annotations</h1>
+    <h1>Upload Image and Add Annotation</h1>
 
-    <div>
-        <input type="file" id="upload" accept="image/*">
-        <input type="text" id="objectTitle" placeholder="Enter title">
-        <input type="text" id="objectComment" placeholder="Enter description">
-        <button id="saveButton">Save Image with Annotations</button>
-    </div>
+    <input type="file" id="upload">
+    <input type="text" id="objectTitle" placeholder="Enter title">
+    <textarea id="objectComment" placeholder="Enter description"></textarea>
+    <button id="saveButton">Save Image with Annotation</button>
 
     <canvas id="canvas"></canvas>
 
@@ -33,7 +28,7 @@
         let startX = 0, startY = 0, endX = 0, endY = 0;
         let annotations = [];
 
-        // Load image onto canvas
+        // Load the image into the canvas
         document.getElementById('upload').addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
@@ -45,6 +40,7 @@
             }
         });
 
+        // On image load, draw it on the canvas
         image.onload = function () {
             canvas.width = image.width;
             canvas.height = image.height;
@@ -52,15 +48,7 @@
             drawAnnotations();
         };
 
-        // Mouse events for annotation
-        function getMousePos(event) {
-            const rect = canvas.getBoundingClientRect();
-            return {
-                x: event.clientX - rect.left,
-                y: event.clientY - rect.top
-            };
-        }
-
+        // Start drawing annotation
         canvas.addEventListener('mousedown', (e) => {
             isDrawing = true;
             const pos = getMousePos(e);
@@ -68,6 +56,7 @@
             startY = pos.y;
         });
 
+        // Draw rectangle preview while dragging
         canvas.addEventListener('mousemove', (e) => {
             if (isDrawing) {
                 const pos = getMousePos(e);
@@ -77,6 +66,7 @@
             }
         });
 
+        // End drawing annotation
         canvas.addEventListener('mouseup', () => {
             if (!isDrawing) return;
             isDrawing = false;
@@ -93,9 +83,30 @@
                 description: description
             };
             annotations.push(newAnnotation);
+
             drawAnnotations();
         });
 
+        // Draw the annotations on the canvas
+        function drawAnnotations() {
+            annotations.forEach(annotation => {
+                ctx.beginPath();
+                ctx.rect(annotation.x, annotation.y, annotation.width, annotation.height);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'blue';
+                ctx.stroke();
+
+                ctx.fillStyle = 'blue';
+                ctx.font = '12px Arial';
+                ctx.fillText(annotation.title, annotation.x, annotation.y > 10 ? annotation.y - 5 : 10);
+
+                ctx.fillStyle = 'green';
+                ctx.font = '10px Arial';
+                ctx.fillText(`Description: ${annotation.description}`, annotation.x, annotation.y + annotation.height + 15);
+            });
+        }
+
+        // Preview rectangle while dragging
         function drawRectPreview(x, y, x2, y2) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(image, 0, 0);
@@ -113,52 +124,49 @@
             ctx.stroke();
         }
 
-        function drawAnnotations() {
-            annotations.forEach(annotation => {
-                ctx.beginPath();
-                ctx.rect(annotation.x, annotation.y, annotation.width, annotation.height);
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = 'blue';
-                ctx.stroke();
-
-                ctx.fillStyle = 'blue';
-                ctx.font = '12px Arial';
-                ctx.fillText(annotation.title, annotation.x, annotation.y > 10 ? annotation.y - 5 : 10);
-
-                ctx.fillStyle = 'green';
-                ctx.font = '10px Arial';
-                ctx.fillText(annotation.description, annotation.x, annotation.y + annotation.height + 15);
-            });
-        }
-
+        // Save the image and annotation data
         document.getElementById('saveButton').addEventListener('click', async function() {
-            const imageData = canvas.toDataURL('image/png');
+            const imageFile = document.getElementById('upload').files[0];
             const objectTitle = document.getElementById('objectTitle').value;
             const objectComment = document.getElementById('objectComment').value;
 
-            const payload = {
-                image: imageData,
-                annotations: annotations
-            };
+            if (!imageFile) {
+                alert('Please upload an image first!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', imageFile);
+            formData.append('title', objectTitle);
+            formData.append('description', objectComment);
+            formData.append('annotations', JSON.stringify(annotations));
 
             try {
-                const response = await fetch('http://localhost:5000/api/images', {
+                const response = await fetch('http://localhost:5000/api/images/create', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: formData
                 });
 
                 if (response.ok) {
-                    alert('Image and annotations saved successfully!');
-                    window.location.href = "gallery.html";  // Redirect to gallery after save
+                    const result = await response.json();
+                    console.log('Image uploaded successfully:', result);
+                    alert('Image uploaded successfully!');
                 } else {
-                    alert('Failed to save image and annotations.');
+                    alert('Failed to upload image.');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error saving image and annotations.');
+                alert('Error uploading image.');
             }
         });
+
+        // Function to get mouse position relative to the canvas
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            return { x: x, y: y };
+        }
     </script>
 </body>
 </html>
