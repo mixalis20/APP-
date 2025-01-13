@@ -3,69 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="gallery.css">
+    <link rel="stylesheet" href="style.css">
     <title>Gallery</title>
-    <style>
-        img {
-            width: 200px;
-            margin: 10px;
-        }
-        .image-container {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .image-info {
-            margin-top: 5px;
-            font-size: 12px;
-        }
-    </style>
 </head>
 <body>
-    <h1>Image Gallery</h1>
 
-    <div id="gallery" class="image-container"></div>
+    <div class="navbar">
+        <ul>
+            <li><a href="index.html"> Image</a></li>
+            <li><a href="gallery.html"> Gallery</a></li>
+        </ul>
+    </div>
+    <h1>Image Gallery</h1>
+    <div id="gallery"></div>
 
     <script>
-        // Fetch images and annotations from the server
         async function fetchGallery() {
             try {
                 const response = await fetch('http://localhost:5000/api/images');
                 const images = await response.json();
                 const galleryDiv = document.getElementById('gallery');
-                galleryDiv.innerHTML = ''; // Clear the gallery
-
+                galleryDiv.innerHTML = '';
                 images.forEach(imageData => {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = imageData.image;
-                    imgElement.alt = imageData.title;
-
-                    const infoDiv = document.createElement('div');
-                    infoDiv.classList.add('image-info');
-                    infoDiv.innerHTML = `
-                        <strong>${imageData.title}</strong><br>
-                        <em>${imageData.description}</em><br>
-                    `;
-
-                    // Add annotations
+                    const container = document.createElement('div');
+                    const img = document.createElement('img');
+                    img.src = imageData.image;
+                    container.appendChild(img);
                     imageData.annotations.forEach(annotation => {
                         const annotationDiv = document.createElement('div');
-                        annotationDiv.innerHTML = `
-                            <p><strong>Title:</strong> ${annotation.title}</p>
-                            <p><strong>Description:</strong> ${annotation.description}</p>
-                        `;
-                        infoDiv.appendChild(annotationDiv);
+                        annotationDiv.classList.add('annotation');
+                        annotationDiv.style.width = `${annotation.width}px`;
+                        annotationDiv.style.height = `${annotation.height}px`;
+                        annotationDiv.style.left = `${annotation.x}px`;
+                        annotationDiv.style.top = `${annotation.y}px`;
+                        annotationDiv.textContent = `${annotation.title}`;
+                        container.appendChild(annotationDiv);
                     });
-
-                    galleryDiv.appendChild(imgElement);
-                    galleryDiv.appendChild(infoDiv);
+                    galleryDiv.appendChild(container);
                 });
             } catch (error) {
                 console.error('Error fetching gallery:', error);
-                alert('Error fetching gallery.');
             }
         }
-
-        // Fetch the gallery when the page loads
-        window.onload = fetchGallery;
+        fetchGallery();
     </script>
 </body>
 </html>

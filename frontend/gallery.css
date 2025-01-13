@@ -92,4 +92,8 @@ h1 {
       padding: 10px;
     }
   }
-  
+
+img {
+     max-width: 500px; 
+}
+        
