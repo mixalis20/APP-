@@ -12,7 +12,7 @@
 .image-container {
   position: relative;
   width: 300px;
-  height: 300px;
+  height: 255px;
   border: 2px solid #ddd;
   margin: 20px 0; /* Δημιουργεί χώρο πάνω και κάτω από την εικόνα */
   padding: 10px;
@@ -32,7 +32,7 @@
 
 .annotation {
   position: absolute;
-  padding: 10px;
+  padding: 7px;
   color: #007bff;
   font-size: 14px;
   border-radius: 5px;
@@ -52,7 +52,7 @@
 
 .annotation p {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   color: #003366;
 }
 
