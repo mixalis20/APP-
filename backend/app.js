@@ -8,7 +8,7 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' }));
 
 // Σύνδεση με MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/myproject', {
+mongoose.connect('mongodb+srv://Geovout06:Gio2006@cluster0.hkuc2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
