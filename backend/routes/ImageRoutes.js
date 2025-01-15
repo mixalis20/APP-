@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const Image = require('../models/Image');
 const authenticate = require('../middleware/authMiddleware'); // Import authentication middleware
 
 // Set up multer for image upload

@@ -5,6 +5,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authroutes');
 const imageRoutes = require('./routes/imageRoutes');
+const Image = require('./models/Image');  
 
 dotenv.config();
 
@@ -52,7 +53,6 @@ app.use('/api', imageRoutes);
 
 // Στατικός φάκελος για την προβολή μεταφορτωμένων εικόνων
 app.use('/uploads', express.static('uploads'));
-
 
 // Εκκίνηση του server
 app.listen(5000, () => {

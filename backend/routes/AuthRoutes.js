@@ -19,8 +19,11 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Username already exists' });
     }
 
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Create a new user
-    const user = new User({ username, password });
+    const user = new User({ username, password: hashedPassword });
     await user.save();
 
     res.status(201).json({ message: 'User registered successfully' });
@@ -41,8 +44,8 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Invalid username or password' });
     }
 
-    // Check if the password is correct
-    const isValidPassword = await user.isPasswordValid(password);
+    // Check if the password is correct using bcrypt.compare
+    const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       return res.status(400).json({ error: 'Invalid username or password' });
     }
