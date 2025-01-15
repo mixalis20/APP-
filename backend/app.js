@@ -2,13 +2,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const dotenv = require('dotenv');
+const authRoutes = require('./routes/authroutes');
+const imageRoutes = require('./routes/imageRoutes');
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' }));
 
 // Σύνδεση με MongoDB
-mongoose.connect('mongodb+srv://Geovout06:Gio2006@cluster0.hkuc2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
@@ -16,23 +21,6 @@ mongoose.connect('mongodb+srv://Geovout06:Gio2006@cluster0.hkuc2.mongodb.net/?re
 }).catch(err => {
   console.error('MongoDB connection error:', err);
 });
-
-// Σχήμα για τις εικόνες
-const imageSchema = new mongoose.Schema({
-  image: String,
-  annotations: [
-    {
-      x: Number,
-      y: Number,
-      width: Number,
-      height: Number,
-      title: String,
-      description: String,
-    },
-  ],
-});
-
-const Image = mongoose.model('Image', imageSchema);
 
 // Αποθήκευση εικόνας και annotations
 app.post('/api/images', async (req, res) => {
@@ -57,6 +45,14 @@ app.get('/api/images', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch images' });
   }
 });
+
+// Χρήση διαδρομών ελέγχου ταυτότητας
+app.use('/api/auth', authRoutes);
+app.use('/api', imageRoutes);
+
+// Στατικός φάκελος για την προβολή μεταφορτωμένων εικόνων
+app.use('/uploads', express.static('uploads'));
+
 
 // Εκκίνηση του server
 app.listen(5000, () => {

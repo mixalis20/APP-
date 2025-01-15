@@ -1,23 +1,29 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
-// Ορισμός του σχήματος του χρήστη (schema)
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    age: {
-        type: Number,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    }
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
-// Δημιουργία του μοντέλου User
-const User = mongoose.model('User', userSchema);
+// Hash the password before saving to database
+userSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
+});
 
-module.exports = User;
+// Method to check if the provided password matches the stored password
+userSchema.methods.isPasswordValid = async function (password) {
+  return bcrypt.compare(password, this.password);
+};
+
+module.exports = mongoose.model('User', userSchema);
