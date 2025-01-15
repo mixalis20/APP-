@@ -1,16 +1,16 @@
-const wrapper = document.querySelector('.wrapper');
-const loginLink = document.querySelector('.login-link');
-const registerLink = document.querySelector('.register-link');
-const btnPopup = document.querySelector('.btnLogin-popup');
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Αποτρέπει την υποβολή της φόρμας για να κάνουμε πρώτα τον έλεγχο.
 
-registerLink.addEventListener('click', ()=> {
-    wrapper.classList.add('active');
-});
+    // Εδώ μπορείς να προσθέσεις τον έλεγχο για το email και τον κωδικό.
 
-loginLink.addEventListener('click', ()=> {
-    wrapper.classList.remove('active');
-});
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-btnPopup.addEventListener('click', ()=> {
-    wrapper.classList.add('active-popup');
+    // Ελέγχουμε αν τα πεδία δεν είναι κενά.
+    if (email && password) {
+        // Όταν τα δεδομένα είναι σωστά, ανακατευθύνουμε στο index.html.
+        window.location.href = 'index.html';  // Ανακατεύθυνση στην αρχική σελίδα
+    } else {
+        alert('Please fill in both fields');
+    }
 });

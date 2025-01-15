@@ -1,230 +1,190 @@
-*{
+/* General Styles */
+body {
     margin: 0;
     padding: 0;
+    background: linear-gradient(to bottom, #2c3e50, #4ca1af); /* Από σκοτεινό μπλε σε φωτεινό μπλε */
+    color: white; /* Λευκό χρώμα κειμένου */
+    font-family: 'Verdana', sans-serif; /* Γραμματοσειρά για καλή ανάγνωση */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-body {
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    color: white;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  /* Login Form Styles */
+  .wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: url('/frontend/images/login.jpg')no-repeat;
-    background-size: cover;
-    background-position: center;
-}
-
-header {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .form-box {
+    background-color: rgba(0, 0, 0, 0.7); /* Σκούρο background για την φόρμα */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .form-box h2 {
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  .input-box {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .input-box input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #2d3b48;
+    color: white;
+  }
+  
+  .input-box label {
+    position: absolute;
+    top: -8px;
+    left: 15px;
+    font-size: 14px;
+    color: #ccc;
+  }
+  
+  input[type="email"], input[type="password"] {
+    font-size: 16px;
+    color: white;
+  }
+  
+  .remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .remember-forgot label {
+    color: #ccc;
+    font-size: 14px;
+  }
+  
+  .remember-forgot a {
+    color: #4ca1af;
+    font-size: 14px;
+    text-decoration: none;
+  }
+  
+  .remember-forgot a:hover {
+    text-decoration: underline;
+  }
+  
+  .btn {
+    background-color: #4CAF50; /* Green color */
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #45a049;
+  }
+  
+  /* Navigation Styles */
+  header {
+    width: 100%;
+    background-color: #061320;
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    padding: 20px 100px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 99;
-}
-
-.logo{
-    font-size: 2em;
-    color: #fff;
-    user-select: none;
-}
-
-.navigation a {
-    position: relative;
-    font-size: 1.1em;
-    color: #fff;
+    z-index: 1000;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  header .logo {
+    font-size: 24px;
+    color: white;
+    margin-left: 20px;
+    display: inline-block;
+  }
+  
+  header .navigation {
+    float: right;
+    margin-right: 20px;
+  }
+  
+  header .navigation a {
+    color: #05121F;
     text-decoration: none;
-    font-weight: 500;
-    margin-left: 40px;
-}
-
-.navigation a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -6px;
-    width: 100%;
-    height: 3px;
-    background: #fff;
+    padding: 10px;
+    font-size: 16px;
+    margin: 0 10px;
+    background-color: #1C3045;
     border-radius: 5px;
-    transform-origin: right;
-    transform: scaleX(0);
-    transition: transform .5s;
-}
-
-.navigation a:hover::after{
-    transform-origin: left;
-    transform: scaleX(1);
-}
-
-.navigation .btnLogin-popup {
-    width: 130px;
-    height: 50px;
-    background: transparent;
-    border: 2px solid #fff;
-    outline: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1.1em;
-    color: #fff;
-    font-weight: 500;
-    margin-left: 40px;
-    transition: .5s;
-}
-
-.navigation .btnLogin-popup:hover {
-    background: #fff;
-    color: #162938;
-}
-
-.wrapper {
-    position: relative;
-    width: 400px;
-    height: 440px;
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, .5);
-    border-radius: 20px;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform .5s ease,height .2s ease;
-    overflow: hidden;
-    transform: scale(0);
-}
-
-.wrapper.active-popup {
-    transform: scale(1);
-}
-
-.wrapper.active {
-    height: 520px;
-}
-
-.wrapper .form-box {
-    width: 100%;
-    padding: 40px;
-}
-
-.wrapper .form-box.login {
-    transition: transform .18s ease;
-    transform: translateX(0);
-}
-
-.wrapper.active .form-box.login {
-    transition: none;
-    transform: translateX(-400px);
-}
-
-.wrapper .form-box.register {
-    position: absolute;
-    transition: none;
-    transform: translateX(400px);
-}
-
-.wrapper.active .form-box.register {
-    transition: transform .18s ease;
-    transform: translateX(0);
-}
-
-.form-box h2 {
-    font-size: 2em;
-    color: #162938;
-    text-align: center;
-}
-
-.input-box {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    border-bottom: 2px solid #162938;
-    margin: 30px 0;
-}
-
-.input-box label {
-    position: absolute;
-    top: 50%;
-    left: 5px;
-    transform: translateY(-50%);
-    font-size: 1em;
-    color: #162938;
-    font-weight: 500;
-    pointer-events: none;
-    transition: .5s;
-}
-
-.input-box input:focus~label,
-.input-box input:valid~label {
-    top: -5px;
-}
-
-.input-box input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
+    transition: background-color 0.3s;
+  }
+  
+  header .navigation a:hover {
+    background-color: #0E4880;
+    color: white;
+  }
+  
+  header .navigation button {
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
     border: none;
-    outline: none;
-    font-size: 1em;
-    color: #162938;
-    font-weight: 600;
-    padding: 0 35px 0 5px;
-}
-
-.remember-forgot {
-    font-size: .9em;
-    color: #162938;
-    font-weight: 500;
-    margin: -15px 0 15px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.remember-forgot label input {
-    accent-color: #162938;
-    margin-right: 3px;
-}
-
-.remember-forgot a {
-    color: #162938;
-    text-decoration: none;
-}
-
-.remember-forgot a:hover {
-    text-decoration: underline;
-}
-
-.btn {
-    width: 100%;
-    height: 45px;
-    background: #162938;
-    border: none;
-    outline: none;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
-    color: #fff;
-    font-weight: 500;
-}
-
-.login-register {
-    font-size: .9em;
-    color: #162938;
-    text-align: center;
-    font-weight: 500;
-    margin: 25px 0 10px;
-}
-
-.login-register p a {
-    color: #162938;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.login-register p a:hover {
-    text-decoration: underline;
-}
+    transition: background-color 0.3s;
+  }
+  
+  header .navigation button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Media Queries for responsiveness */
+  @media (max-width: 768px) {
+    .form-box {
+      padding: 20px;
+      max-width: 300px;
+    }
+  
+    .input-box input {
+      font-size: 14px;
+    }
+  
+    .btn {
+      font-size: 14px;
+    }
+  
+    header .navigation {
+      font-size: 14px;
+    }
+  }
+  
