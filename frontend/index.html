@@ -10,120 +10,45 @@
 
     <div class="navbar">
         <ul>
-            <li><a href="index.html"> Image</a></li>
-            <li><a href="gallery.html"> Gallery</a></li>
+            <li><a href="index.html" id="imageLink">Image</a></li>
+            <li><a href="gallery.html" id="galleryLink">Gallery</a></li>
         </ul>
     </div>
+
     <h1>Upload Image</h1>
     <div class="upload-container">
         <label for="upload">Upload Image:</label>
         <!-- Εισαγωγή εικόνας -->
         <input type="file" id="upload" accept="image/*">
         
-        <!-- Κουμπί αποθήκευσης -->
-        <button id="saveButton">Save Image</button>
+       <label for="titleInput">Title:</label> 
+        <input id="titleInput" type="text" placeholder="Enter annotation title...">
 
-        <!-- Εισαγωγή διαστάσεων για το resize -->
-        <button id="resizeButton" class="resize-button">Resize Image</button>
+        <label for="descriptionInput">Description:</label>
+        <input id="descriptionInput" type="text" placeholder="Enter annotation description...">
+
+        
     </div>
-    <!-- Canvas για την εμφάνιση της εικόνας και των annotations -->
-    <canvas id="canvas"></canvas>
-    
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        let image = new Image();
-        let annotations = [];
-        let isDrawing = false;
-        let startX, startY, endX, endY;
+    <div class="buttons-container">
+        <button id="saveButton" class="button">Save Image</button>
+        <button id="resize-button" class="button">Resize Image</button>
+    </div>
 
-        document.getElementById('upload').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    image.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
 
-        image.onload = () => {
-            canvas.width = image.width;
-            canvas.height = image.height;
-            ctx.drawImage(image, 0, 0);
-        };
+    <!-- Modal για το μέγεθος της εικόνας -->
+<div id="resizeModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <h2>Resize Image</h2>
+        <label for="newWidth">Width:</label>
+        <input type="number" id="newWidth" placeholder="Enter new width">
+        <label for="newHeight">Height:</label>
+        <input type="number" id="newHeight" placeholder="Enter new height">
+        <button id="applyResize" class="button">Apply Resize</button>
+    </div>
+</div>    <!-- Canvas για την εμφάνιση της εικόνας και των annotations -->
+<canvas id="canvas"></canvas>
 
-        canvas.addEventListener('mousedown', (e) => {
-            isDrawing = true;
-            const rect = canvas.getBoundingClientRect();
-            startX = e.clientX - rect.left;
-            startY = e.clientY - rect.top;
-        });
-
-        canvas.addEventListener('mousemove', (e) => {
-            if (!isDrawing) return;
-            const rect = canvas.getBoundingClientRect();
-            endX = e.clientX - rect.left;
-            endY = e.clientY - rect.top;
-            ctx.drawImage(image, 0, 0);
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(startX, startY, endX - startX, endY - startY);
-        });
-
-        canvas.addEventListener('mouseup', () => {
-            isDrawing = false;
-            const title = prompt('Enter annotation title:');
-            const description = prompt('Enter annotation description:');
-            annotations.push({
-                x: Math.min(startX, endX),
-                y: Math.min(startY, endY),
-                width: Math.abs(endX - startX),
-                height: Math.abs(endY - startY),
-                title,
-                description,
-            });
-            ctx.drawImage(image, 0, 0);
-            annotations.forEach(annotation => {
-                ctx.strokeStyle = 'blue';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(annotation.x, annotation.y, annotation.width, annotation.height);
-                ctx.font = '12px Arial';
-                ctx.fillText(annotation.title, annotation.x, annotation.y - 5);
-            });
-        });
-
-        let isLarge = false;
-
-        document.getElementById('resizeButton').addEventListener('click', () => {
-            if (isLarge) {
-                canvas.style.width = '300px';
-                canvas.style.height = 'auto';
-            } else {
-                canvas.style.width = '500px';
-                canvas.style.height = 'auto';
-            }
-            isLarge = !isLarge;
-        });
-
-        document.getElementById('saveButton').addEventListener('click', async () => {
-            const imageData = canvas.toDataURL();
-            try {
-                const response = await fetch('http://localhost:5000/api/images', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ image: imageData, annotations }),
-                });
-                if (response.ok) {
-                    alert('Image and annotations saved successfully!');
-                } else {
-                    alert('Failed to save image and annotations');
-                }
-            } catch (error) {
-                console.error('Error saving image and annotations:', error);
-            }
-        });
-    </script>
+    <script src="/frontend/script.js"></script>
 </body>
 </html>

@@ -8,24 +8,94 @@
   padding: 20px;
   box-sizing: border-box;
 }
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #2c3e50, #4ca1af); /* Από σκοτεινό μπλε σε φωτεινό μπλε */
+  color: white; /* Λευκό χρώμα κειμένου */
+  font-family: 'Verdana', sans-serif; /* Γραμματοσειρά για καλή ανάγνωση */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: auto;
+  width: auto;
+  box-sizing: border-box;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin-top: 60px;
+}
+
+/* Navbar Styling */
+.navbar {
+  width: 100%;
+  background-color:#061320;
+  position: fixed;  /* Κρατά το navbar στη θέση του */
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar ul {
+  list-style: none;
+ 
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+ 
+}
+
+.navbar ul li {
+  margin: 0 10px;
+ 
+}
+
+.navbar ul li a {
+  color: #05121F;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 15px 20px;
+  display: block;
+  background-color: #1C3045;
+  transition: background-color 0.3s;
+  border-radius: 10px;
+  
+}
+
+.navbar ul li a:hover {
+  background-color: #0E4880;
+  color: white;
+  border-radius: 10px;
+}
+
+/* Hover effect */
+.navbar a:hover {
+  color: #007bff; /* Αυτό θα αλλάξει το χρώμα του συνδέσμου όταν περνάς τον δείκτη του ποντικιού πάνω από αυτό */
+}
+
+/* Active page style */
+.navbar a.active {
+  font-weight: bold;
+  color: #007bff; /* Χρώμα όταν είναι η ενεργή σελίδα */
+  border-bottom: 2px solid #007bff; /* Μπορείς να προσθέσεις και μια γραμμή κάτω από το ενεργό link */
+}
+
 
 .image-container {
   position: relative;
   width: 300px;
   height: 255px;
-  border: 2px solid #ddd;
   margin: 20px 0; /* Δημιουργεί χώρο πάνω και κάτω από την εικόνα */
   padding: 10px;
   border-radius: 10px; /* Στρογγυλεμένες γωνίες για καλύτερη εμφάνιση */
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ελαφρύ shadow για 3D effect */
 }
 
 .image-container img {
   width: 100%;
   height: auto;
   display: block;
-  border-bottom: 2px solid #ddd;
   margin-bottom: 15px; /* Δημιουργεί χώρο κάτω από την εικόνα */
   border-radius: 5px;
 }
@@ -35,12 +105,15 @@
   padding: 7px;
   color: #007bff;
   font-size: 14px;
-  border-radius: 5px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }
 
 .annotation h3 {
@@ -58,14 +131,96 @@
 
 
 
-/* Εφέ hover για την εικόνα */
-.image-container:hover {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Αυξάνει το shadow κατά το hover */
+/* Modal Styles */
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8); /* Darker background */
+  transition: opacity 0.3s ease-in-out; /* Smooth fade-in/out */
 }
 
-/* Responsive design για μικρές οθόνες */
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width:100vh; /* Περισσότερο πλάτος για το modal */
+  height: 50vh; /* Περισσότερο ύψος για το modal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow-y: auto; /* Allow scroll if annotations exceed space */
+}
+
+.close {
+  color: #aaa;
+  font-size: 30px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #333;
+}
+
+#modalImage {
+  width: auto; /* Image will take full width of the modal */
+  height: 100%; /* Maintain aspect ratio */
+  max-height: 50vh; /* Increase the height of the image to 65% of the viewport height */
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#modalAnnotations {
+  margin-top: 20px;
+  max-height: 25vh; /* Limit annotation space to 25% of the modal height */
+  overflow-y: auto; /* Scroll if annotations exceed space */
+}
+
+
+
+.annotation strong {
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.annotation p {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Mobile responsiveness */
 @media (max-width: 768px) {
-  .image-container {
-      width: 100%; /* Οι εικόνες θα παίρνουν όλο το πλάτος της οθόνης */
+  .modal-content {
+      width: 90%;
+      padding: 20px; /* Reduced padding for smaller screens */
+  }
+
+  #modalImage {
+      max-height: 50vh; /* Lower max-height on smaller screens */
+  }
+
+  #modalAnnotations {
+      max-height: 40vh; /* Allow more space for annotations on small screens */
   }
 }
+
+
+
+
+
+
+
+
