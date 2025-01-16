@@ -5,7 +5,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authroutes');
 const imageRoutes = require('./routes/ImageRoutes');
-const Image = require('./models/Image');  
+const Image = require('./models/Image');
+const authenticate = require('./middleware/authMiddleware'); // Εισαγωγή του middleware  
 
 dotenv.config();
 
@@ -46,6 +47,18 @@ app.get('/api/images', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch images' });
   }
 });
+
+
+// Δημιουργία μιας προστατευμένης διαδρομής
+app.use('/protected', authenticate, (req, res) => {
+  res.status(200).json({ message: 'This is a protected route!' });
+});
+
+// Δημόσια διαδρομή που δεν απαιτεί αυθεντικοποίηση
+app.get('/public', (req, res) => {
+  res.status(200).json({ message: 'This is a public route!' });
+});
+
 
 // Χρήση διαδρομών ελέγχου ταυτότητας
 app.use('/api/auth', authRoutes);

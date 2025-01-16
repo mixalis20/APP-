@@ -8,21 +8,21 @@ dotenv.config(); // Φόρτωση μεταβλητών περιβάλλοντο
 
 const router = express.Router();
 
-// User Registration
+// Εγγραφή χρήστη
 router.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Check if the username already exists
+    // Ελεγχος εάν το όνομα χρήστη υπάρχει ήδη
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ error: 'Username already exists' });
     }
 
-    // Hash the password before saving
+    // Κατακερματίστε τον κωδικό πρόσβασης πριν από την αποθήκευση
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
+    // Δημιουργία ενός νέου χρήστη
     const user = new User({ username, password: hashedPassword });
     await user.save();
 
@@ -33,24 +33,24 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// User Login and Generate JWT Token
+// Είσοδος χρήστη και δημιουργία JWT Token
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Find the user by username
+    // Βρείτε τον χρήστη με το όνομά του
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(400).json({ error: 'Invalid username or password' });
     }
 
-    // Check if the password is correct using bcrypt.compare
+    // Έλεγχος εάν ο κωδικός πρόσβασης είναι σωστός χρησιμοποιώντας το bcrypt.compare
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       return res.status(400).json({ error: 'Invalid username or password' });
     }
 
-    // Create JWT token
+    // Δημιουργία JWT token
     const token = jwt.sign(
       { userId: user._id, username: user.username },
       process.env.JWT_SECRET,

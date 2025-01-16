@@ -1,28 +1,28 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const authenticate = require('../middleware/authMiddleware'); // Import authentication middleware
+const authenticate = require('../middleware/authMiddleware'); // Εισαγωγή ενδιάμεσου λογισμικού ελέγχου ταυτότητας
 
-// Set up multer for image upload
+// Ρύθμιση του multer για τη μεταφόρτωση εικόνων
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Folder to store images
+    cb(null, 'uploads/'); // Φάκελος για αποθήκευση εικόνων
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Create unique filename
+    cb(null, Date.now() + path.extname(file.originalname)); // Δημιουργήστε μοναδικό όνομα αρχείου
   }
 });
 
 const upload = multer({ storage });
 
-// Initialize the router
+// Αρχικοποιήστε το δρομολογητή
 const router = express.Router();
 
-// Image upload route (protected by JWT authentication)
+// Διαδρομή μεταφόρτωσης εικόνας (προστατεύεται από έλεγχο ταυτότητας JWT)
 router.post('/images', authenticate, upload.single('image'), async (req, res) => {
   try {
     const { annotations } = req.body;
-    const imagePath = req.file.path; // Get the file path of the uploaded image
+    const imagePath = req.file.path; // Λάβετε τη διαδρομή αρχείου της μεταφορτωμένης εικόνας
 
     const newImage = new Image({
       image: imagePath,
@@ -37,7 +37,7 @@ router.post('/images', authenticate, upload.single('image'), async (req, res) =>
   }
 });
 
-// Fetch all images (protected by JWT authentication)
+// Λήψη όλων των εικόνων (προστατεύεται με έλεγχο ταυτότητας JWT)
 router.get('/images', authenticate, async (req, res) => {
   try {
     const images = await Image.find();
