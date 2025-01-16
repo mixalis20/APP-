@@ -32,7 +32,10 @@ function openImageModal(imageData) {
     const modal = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
     const modalAnnotations = document.getElementById('modalAnnotations');
-
+    const tagsInput = document.getElementById('tagsInput');
+    const addTagsButton = document.getElementById('addTagsButton');
+    const imageTagsContainer = document.getElementById('imageTags');
+    
     // Ορίζουμε την εικόνα στο modal
     modalImage.src = imageData.image;
 
@@ -63,6 +66,30 @@ function openImageModal(imageData) {
         modalAnnotations.appendChild(annotationDiv);
     });
 
+    // Εμφανίζουμε τα tags, αν υπάρχουν, στο modal
+    loadTags(imageData);
+
+    // Προσθήκη tags στο modal
+    addTagsButton.addEventListener('click', () => {
+        const tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+        if (tags.length > 0) {
+            // Φόρτωση των υπαρχόντων tags από το localStorage
+            let existingTags = JSON.parse(localStorage.getItem(imageData.image)) || [];
+
+            // Προσθήκη νέων tags στα υπάρχοντα tags
+            existingTags = [...new Set([...existingTags, ...tags])]; // Χρησιμοποιούμε Set για να μην έχουμε διπλότυπα
+
+            // Αποθήκευση των ενημερωμένων tags στον localStorage
+            localStorage.setItem(imageData.image, JSON.stringify(existingTags));
+
+            // Ενημέρωση των tags στο modal
+            loadTags(imageData);
+
+            // Καθαρισμός του πεδίου εισαγωγής
+            tagsInput.value = '';
+        }
+    });
+
     // Εμφανίζουμε το modal με ομαλό fade-in effect
     modal.style.display = 'block';
     setTimeout(() => {
@@ -78,14 +105,22 @@ function openImageModal(imageData) {
     });
 }
 
+// Φόρτωση των tags από το localStorage
+function loadTags(imageData) {
+    const imageTagsContainer = document.getElementById('imageTags');
+    const tags = JSON.parse(localStorage.getItem(imageData.image)) || [];
+
+    imageTagsContainer.innerHTML = tags.map(tag => `<span>${tag}</span>`).join('');
+}
+
 // Κλείσιμο του modal όταν κάνεις κλικ στο κουμπί κλεισίματος
 document.getElementById('closeModal').addEventListener('click', () => {
     const modal = document.getElementById('imageModal');
     modal.style.display = 'none';
 });
 
+// Εμφάνιση της gallery όταν φορτώνει η σελίδα
 fetchGallery();
-
 
 document.addEventListener('DOMContentLoaded', () => {
     // Παίρνουμε όλα τα links από το navbar
