@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authroutes');
-const imageRoutes = require('./routes/imageRoutes');
+const imageRoutes = require('./routes/ImageRoutes');
 const Image = require('./models/Image');  
 
 dotenv.config();

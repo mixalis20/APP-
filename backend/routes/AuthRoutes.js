@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const dotenv = require('dotenv');
 
-dotenv.config(); // Load environment variables
+dotenv.config(); // Φόρτωση μεταβλητών περιβάλλοντος
 
 const router = express.Router();
 
