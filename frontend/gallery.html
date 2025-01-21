@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/frontend/gallery.css">
+    <link rel="stylesheet" href="/frontend/navbar.css">
     <title>Gallery</title>
 </head>
 <body>
@@ -15,31 +16,48 @@
         </ul>
     </div>
     
-    <h1>Image Gallery</h1>
+<!-- Dropdown για την επιλογή κατηγορίας -->
+<label for="categoryFilter">Filter by Category:</label>
+<select id="categoryFilter">
+    <option value="all">All</option>
+    <option value="nature">Nature</option>
+    <option value="city">City</option>
+    <option value="animals">Animals</option>
+    <!-- Μπορείτε να προσθέσετε περισσότερες κατηγορίες εδώ -->
+</select>
 
+    <h1>Image Gallery</h1>
     <div id="gallery">
-        
+        <!-- Η gallery θα φορτωθεί εδώ -->
     </div>
 
     <!-- Modal για εμφάνιση εικόνας και προσθήκη tags -->
     <div id="imageModal" class="modal">
         <div class="modal-content">
             <span id="closeModal" class="close">&times;</span>
-            <img id="modalImage" src="" alt="Selected Image">
             
-            <div id="modalAnnotations">
-                <!-- Εδώ θα εμφανίζονται τα annotations, αν υπάρχουν -->
+            <!-- Χώρος για την εικόνα -->
+            <div class="modal-left">
+                <img id="modalImage" src="" alt="Selected Image">
             </div>
+            
+            <!-- Χώρος για τον τίτλο, annotations και tags -->
+            <div class="modal-right">
+                <!-- Εδώ δεν θα υπάρχει πλέον τα πεδία τίτλου και περιγραφής -->
+                <div id="modalAnnotations"></div>
 
-            <div>
-                <label for="tagsInput">Add Tags:</label>
+                <!-- Προσθήκη Tags -->
+                <h4 for="tagsInput">Add Tags:</h4>
                 <input type="text" id="tagsInput" placeholder="Enter tags, separated by commas">
                 <button id="addTagsButton">Add Tags</button>
-            </div>
+                <div id="imageTags">
+                    <!-- Εδώ θα εμφανίζονται τα tags που προστίθενται -->
+                </div>
+                
+               
+
             
-            <div id="imageTags">
-                <!-- Εδώ θα εμφανίζονται τα tags που προστίθενται -->
-            </div>
+           
         </div>
     </div>
 

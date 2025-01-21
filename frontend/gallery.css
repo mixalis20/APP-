@@ -12,7 +12,6 @@ body {
   margin: 0;
   padding: 0;
   background: linear-gradient(to bottom, #2c3e50, #4ca1af); /* Από σκοτεινό μπλε σε φωτεινό μπλε */
-  color: white; /* Λευκό χρώμα κειμένου */
   font-family: 'Verdana', sans-serif; /* Γραμματοσειρά για καλή ανάγνωση */
   display: flex;
   flex-direction: column;
@@ -26,62 +25,14 @@ body {
   margin-top: 60px;
 }
 
-/* Navbar Styling */
-.navbar {
-  width: 100%;
-  background-color:#061320;
-  position: fixed;  /* Κρατά το navbar στη θέση του */
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.navbar ul {
-  list-style: none;
+ h1{
  
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
- 
-}
-
-.navbar ul li {
-  margin: 0 10px;
- 
-}
-
-.navbar ul li a {
-  color: #05121F;
-  text-decoration: none;
-  font-size: 18px;
-  padding: 15px 20px;
-  display: block;
-  background-color: #1C3045;
-  transition: background-color 0.3s;
-  border-radius: 10px;
+    font-size: 2.5rem;
+    color: white;
+    margin-top: 20px;
+    text-align: center;
   
 }
-
-.navbar ul li a:hover {
-  background-color: #0E4880;
-  color: white;
-  border-radius: 10px;
-}
-
-/* Hover effect */
-.navbar a:hover {
-  color: #007bff; /* Αυτό θα αλλάξει το χρώμα του συνδέσμου όταν περνάς τον δείκτη του ποντικιού πάνω από αυτό */
-}
-
-/* Active page style */
-.navbar a.active {
-  font-weight: bold;
-  color: #007bff; /* Χρώμα όταν είναι η ενεργή σελίδα */
-  border-bottom: 2px solid #007bff; /* Μπορείς να προσθέσεις και μια γραμμή κάτω από το ενεργό link */
-}
-
 
 .image-container {
   position: relative;
@@ -101,19 +52,15 @@ body {
 }
 
 .annotation {
- 
   padding: 7px;
-  color: #007bff;
-  font-size: 14px;
+  position: relative;
   box-sizing: border-box;
-  display: inline-block;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
+  margin-right: 12px;
   border: 1px solid #ccc;
   margin-bottom: 10px;
   border-radius: 5px;
   background-color: #f9f9f9;
+  ;
 }
 
 .annotation h3 {
@@ -125,125 +72,213 @@ body {
 
 .annotation p {
   margin: 0;
-  font-size: 12px;
+  font-size: 16px;
   color: #003366;
 }
 
 
 
-/* Modal Styles */
-/* Modal Styles */
+/* General Modal Styles */
 .modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.8); /* Darker background */
-  transition: opacity 0.3s ease-in-out; /* Smooth fade-in/out */
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
+/* Modal content container */
 .modal-content {
-  background-color: #fff;
-  margin: 5% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width:100vh; /* Περισσότερο πλάτος για το modal */
-  height: 50vh; /* Περισσότερο ύψος για το modal */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow-y: auto; /* Allow scroll if annotations exceed space */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    margin: 50px auto;
+    background-color: white;
+    padding: 20px;
+    max-width: 800px;
+    max-height: 600px;
+    border-radius: 8px;
 }
 
+/* Close button */
 .close {
-  color: #aaa;
-  font-size: 30px;
-  font-weight: bold;
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  cursor: pointer;
-  transition: color 0.3s;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 35px;
+    cursor: pointer;
+    color: grey;
 }
 
-.close:hover,
-.close:focus {
-  color: #333;
+/* Left part (Image) */
+.modal-left {
+    flex: 1;
+    max-width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #modalImage {
-  width: auto; /* Image will take full width of the modal */
-  height: 100%; /* Maintain aspect ratio */
-  max-height: 50vh; /* Increase the height of the image to 65% of the viewport height */
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
+/* Right part (Title, Annotations, Tags) */
+.modal-right {
+    flex: 1;
+    max-width: 45%;
+    padding-left: 20px;
+    overflow-y: auto;
+}
+
+/* Annotations */
 #modalAnnotations {
-  margin-top: 20px;
-  max-height: 25vh; /* Limit annotation space to 25% of the modal height */
-  overflow-y: auto; /* Scroll if annotations exceed space */
+    margin-bottom: 20px;
 }
 
-
-
-.annotation strong {
-  font-size: 16px;
-  margin-right: 5px;
-}
-
-.annotation p {
-  margin-top: 5px;
-  font-size: 14px;
-  color: #555;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .modal-content {
-      width: 90%;
-      padding: 20px; /* Reduced padding for smaller screens */
-  }
-
-  #modalImage {
-      max-height: 50vh; /* Lower max-height on smaller screens */
-  }
-
-  #modalAnnotations {
-      max-height: 40vh; /* Allow more space for annotations on small screens */
-  }
-}
-
-#tagsInput {
-  margin-top: 10px;
-  padding: 5px;
-  width: 200px;
-}
-
-#addTagsButton {
-  margin-top: 10px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
+/* Tags */
 #imageTags {
-  margin-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: grey;
 }
 
 #imageTags span {
-  background-color: #f1f1f1;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 5px;
+    display: inline-block;
+    background-color: #eee;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 15px;
+}
+
+/* Tags input */
+#tagsInput {
+    width: 75%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Add Tags button */
+#addTagsButton {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#addTagsButton:hover {
+    background-color: #45a049;
+}
+
+.edit-button {
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  position: absolute;
+  top: 1px; /* Απόσταση από την κορυφή του annotation */
+  right: 1px; /* Απόσταση από τη δεξιά πλευρά του annotation */
+}
+
+.save-button{
+  color: black;
+  background-color: lightskyblue;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
 }
 
 
 
+
+.save-button:hover{
+  background-color: rgb(28, 163, 247);
+}
+
+input, textarea {
+  width: 80%;
+  margin-top: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.edit-button img {
+  width: 24px;  /* Ορίστε το επιθυμητό μέγεθος */
+  height: 24px; /* Ορίστε το επιθυμητό μέγεθος */
+}
+
+/* Στυλ για το dropdown (select) */
+select {
+  width: 220px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 14px;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+/* Εφαρμογή σκιών και border όταν ο χρήστης επιλέγει το dropdown */
+select:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Στυλ για το dropdown όταν είναι απλό (πριν την επιλογή) */
+option {
+  padding: 8px;
+  font-size: 14px;
+}
+
+/* Στυλ όταν είναι hover (επικεντρωμένο στο option) */
+select:hover {
+  border-color: #4CAF50;
+}
+
+/* Στυλ για την τοποθέτηση του dropdown στην σελίδα */
+#categoryFilter {
+  margin-top: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute; /* Απόλυτη τοποθέτηση */
+    top: 80px; /* Απόσταση από το επάνω μέρος της οθόνης (κάτω από το navbar) */
+    right: 20px; /* Απόσταση από τη δεξιά πλευρά της οθόνης */
+}
+
+/* Responsive: Εάν η οθόνη είναι μικρότερη από 600px, το dropdown θα είναι πλήρους πλάτους */
+@media (max-width: 600px) {
+  select {
+      width: 100%;
+  }
+}
+
+label{
+  color: white;
+  position: absolute; /* Απόλυτη τοποθέτηση */
+  top: 70px; /* Απόσταση από το επάνω μέρος της οθόνης (κάτω από το navbar) */
+  right: 20px; /* Απόσταση από τη δεξιά πλευρά της οθόνης */
+}
+h4{
+  margin: 0;
+}
 
 
 

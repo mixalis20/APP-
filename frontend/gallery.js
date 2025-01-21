@@ -5,29 +5,48 @@ async function fetchGallery() {
         const galleryDiv = document.getElementById('gallery');
         galleryDiv.innerHTML = ''; // Καθαρίζει την gallery
 
-        images.forEach(imageData => {
-            const container = document.createElement('div');
-            container.classList.add('image-container');
-
-            // Δημιουργία εικόνας
-            const img = document.createElement('img');
-            img.src = imageData.image;
-            img.classList.add('gallery-image');
-            container.appendChild(img);
-
-            // Όταν κάνεις κλικ στην εικόνα, ανοίγει το modal
-            img.addEventListener('click', () => {
-                openImageModal(imageData);
-            });
-
-            galleryDiv.appendChild(container);
+        // Φίλτρο κατηγορίας
+        const categoryFilter = document.getElementById('categoryFilter');
+        categoryFilter.addEventListener('change', () => {
+            const selectedCategory = categoryFilter.value;
+            displayFilteredGallery(images, selectedCategory);
         });
+
+        // Αρχική εμφάνιση όλων των εικόνων
+        displayFilteredGallery(images, 'all');
     } catch (error) {
         console.error('Error fetching gallery:', error);
     }
 }
 
-// Λειτουργία για να ανοίξει το modal με την εικόνα και τις annotations
+// Συνάρτηση για εμφάνιση φιλτραρισμένων εικόνων στην gallery
+function displayFilteredGallery(images, category) {
+    const galleryDiv = document.getElementById('gallery');
+    galleryDiv.innerHTML = ''; // Καθαρίζει την gallery
+
+    // Φιλτράρισμα εικόνων σύμφωνα με την κατηγορία
+    const filteredImages = category === 'all' ? images : images.filter(image => image.category === category);
+
+    filteredImages.forEach(imageData => {
+        const container = document.createElement('div');
+        container.classList.add('image-container');
+
+        // Δημιουργία εικόνας
+        const img = document.createElement('img');
+        img.src = imageData.image;
+        img.classList.add('gallery-image');
+        container.appendChild(img);
+
+        // Όταν κάνεις κλικ στην εικόνα, ανοίγει το modal
+        img.addEventListener('click', () => {
+            openImageModal(imageData);
+        });
+
+        galleryDiv.appendChild(container);
+    });
+}
+
+// Συνάρτηση για να ανοίξει το modal με την εικόνα και τις annotations
 function openImageModal(imageData) {
     const modal = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
@@ -43,25 +62,68 @@ function openImageModal(imageData) {
     modalAnnotations.innerHTML = '';
 
     // Προσθήκη των annotations στον modal
-    imageData.annotations.forEach(annotation => {
+    imageData.annotations.forEach((annotation, index) => {
         const annotationDiv = document.createElement('div');
         annotationDiv.classList.add('annotation');
 
-        const titleLabel = document.createElement('strong');
-        titleLabel.textContent = 'Τίτλος: ';
-        annotationDiv.appendChild(titleLabel);
+        // Εμφανίζουμε τον τίτλο και την περιγραφή του annotation
+        const titleDiv = document.createElement('div');
+        const storedTitle = localStorage.getItem(`annotation-title-${imageData.image}-${index}`) || annotation.title;
+        titleDiv.innerHTML = `<strong>Τίτλος: </strong><span class="annotation-title">${storedTitle}</span>`;
+        
+        const descriptionDiv = document.createElement('div');
+        const storedDescription = localStorage.getItem(`annotation-description-${imageData.image}-${index}`) || annotation.description;
+        descriptionDiv.innerHTML = `<strong>Περιγραφή: </strong><span class="annotation-description">${storedDescription}</span>`;
+        
+        const editButton = document.createElement('button');
+        editButton.classList.add('edit-button');
 
-        const title = document.createElement('h3');
-        title.textContent = annotation.title;
-        annotationDiv.appendChild(title);
+        // Δημιουργία εικόνας για το κουμπί επεξεργασίας
+        const img = document.createElement('img');
+        img.src = '/frontend/images/edit.png';  // Εδώ βάλε την διαδρομή της εικόνας σου
+        img.alt = 'Επεξεργασία';
 
-        const descriptionLabel = document.createElement('strong');
-        descriptionLabel.textContent = 'Περιγραφή: ';
-        annotationDiv.appendChild(descriptionLabel);
+        // Αφαίρεση φόντου και περιθωρίων από το κουμπί
+        editButton.style.background = 'none';
+        editButton.style.border = 'none';
+        editButton.style.padding = '0';  // Αν θέλεις να αφαιρέσεις οποιοδήποτε padding
 
-        const description = document.createElement('p');
-        description.textContent = annotation.description;
-        annotationDiv.appendChild(description);
+        // Προσθήκη της εικόνας στο κουμπί
+        editButton.appendChild(img);
+
+        // Κουμπί για να μετατρέψει τα πεδία σε input
+        editButton.addEventListener('click', () => {
+            // Μετατρέπουμε τον τίτλο και την περιγραφή σε πεδία επεξεργασίας
+            const titleSpan = titleDiv.querySelector('.annotation-title');
+            const descriptionSpan = descriptionDiv.querySelector('.annotation-description');
+            
+            titleDiv.innerHTML = `<strong>Τίτλος: </strong><input type="text" value="${titleSpan.textContent}">`;
+            descriptionDiv.innerHTML = `<strong>Περιγραφή: </strong><textarea>${descriptionSpan.textContent}</textarea>`;
+            
+            // Προσθήκη κουμπιού για αποθήκευση των αλλαγών
+            const saveButton = document.createElement('button');
+            saveButton.textContent = 'Αποθήκευση Αλλαγών';
+            saveButton.classList.add('save-button');
+            descriptionDiv.appendChild(saveButton);
+
+            // Όταν πατηθεί το κουμπί Αποθήκευση, αποθηκεύουμε τις αλλαγές
+            saveButton.addEventListener('click', () => {
+                const updatedTitle = titleDiv.querySelector('input').value;
+                const updatedDescription = descriptionDiv.querySelector('textarea').value;
+
+                // Αποθήκευση των νέων τίτλων και περιγραφών στο localStorage
+                localStorage.setItem(`annotation-title-${imageData.image}-${index}`, updatedTitle);
+                localStorage.setItem(`annotation-description-${imageData.image}-${index}`, updatedDescription);
+
+                // Ενημέρωση του modal με τις νέες τιμές
+                openImageModal(imageData); // Ανανεώνουμε το modal με τις νέες τιμές
+            });
+        });
+
+        // Προσθήκη του τίτλου, της περιγραφής και του κουμπιού επεξεργασίας
+        annotationDiv.appendChild(titleDiv);
+        annotationDiv.appendChild(descriptionDiv);
+        annotationDiv.appendChild(editButton);
 
         modalAnnotations.appendChild(annotationDiv);
     });
@@ -72,12 +134,13 @@ function openImageModal(imageData) {
     // Προσθήκη tags στο modal
     addTagsButton.addEventListener('click', () => {
         const tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+        
         if (tags.length > 0) {
             // Φόρτωση των υπαρχόντων tags από το localStorage
             let existingTags = JSON.parse(localStorage.getItem(imageData.image)) || [];
 
-            // Προσθήκη νέων tags στα υπάρχοντα tags
-            existingTags = [...new Set([...existingTags, ...tags])]; // Χρησιμοποιούμε Set για να μην έχουμε διπλότυπα
+            // Προσθήκη νέων tags στα υπάρχοντα tags (χωρίς διπλότυπα)
+            existingTags = [...new Set([...existingTags, ...tags])];
 
             // Αποθήκευση των ενημερωμένων tags στον localStorage
             localStorage.setItem(imageData.image, JSON.stringify(existingTags));
@@ -105,22 +168,15 @@ function openImageModal(imageData) {
     });
 }
 
-// Φόρτωση των tags από το localStorage
+// Φόρτωση Tags στο Modal
 function loadTags(imageData) {
     const imageTagsContainer = document.getElementById('imageTags');
     const tags = JSON.parse(localStorage.getItem(imageData.image)) || [];
 
-    imageTagsContainer.innerHTML = tags.map(tag => `<span>${tag}</span>`).join('');
+    imageTagsContainer.innerHTML = tags.map(tag => `<span>${tag}</span>`).join(', ');
 }
 
-// Κλείσιμο του modal όταν κάνεις κλικ στο κουμπί κλεισίματος
-document.getElementById('closeModal').addEventListener('click', () => {
-    const modal = document.getElementById('imageModal');
-    modal.style.display = 'none';
-});
 
-// Εμφάνιση της gallery όταν φορτώνει η σελίδα
-fetchGallery();
 
 document.addEventListener('DOMContentLoaded', () => {
     // Παίρνουμε όλα τα links από το navbar
@@ -138,3 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Εμφάνιση της gallery όταν φορτώνει η σελίδα
+fetchGallery();
