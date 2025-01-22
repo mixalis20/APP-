@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-
-
 const imageSchema = new mongoose.Schema({
   image: String, // Διαδρομή του αρχείου Image
   annotations: [
@@ -13,6 +11,7 @@ const imageSchema = new mongoose.Schema({
       description: String,
     },
   ],
+  tags: [String], // Νέα προσθήκη για τα tags
 });
 
 module.exports = mongoose.model('Image', imageSchema);
