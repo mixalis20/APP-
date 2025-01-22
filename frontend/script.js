@@ -114,6 +114,13 @@ document.getElementById('applyResize').addEventListener('click', () => {
 document.getElementById('saveButton').addEventListener('click', async () => {
     const imageData = canvas.toDataURL();
     const selectedCategory = document.getElementById('category').value; // Λήψη επιλεγμένης κατηγορίας
+
+    // Έλεγχος αν η εικόνα υπάρχει και αν έχει επιλεγεί κατηγορία
+    if (!imageData || imageData === '') {
+        alert('Παρακαλώ επιλέξτε μια εικόνα και κατηγορία πριν αποθηκεύσετε!');
+        return;
+    }
+
     try {
         const response = await fetch('http://localhost:5000/api/images', {
             method: 'POST',

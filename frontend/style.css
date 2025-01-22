@@ -300,3 +300,13 @@ input[type="number"] {
 }
 
 
+#category{
+  border-radius: 10px ;
+  margin: 5px;
+  padding: 5px;
+  font-size: 15px;
+  font-family: sans-serif;
+  color:white;
+  background-color: black;
+  cursor: pointer;
+}
