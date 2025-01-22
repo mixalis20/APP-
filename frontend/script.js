@@ -113,11 +113,12 @@ document.getElementById('applyResize').addEventListener('click', () => {
 // Save image and annotations
 document.getElementById('saveButton').addEventListener('click', async () => {
     const imageData = canvas.toDataURL();
+    const selectedCategory = document.getElementById('category').value; // Λήψη επιλεγμένης κατηγορίας
     try {
         const response = await fetch('http://localhost:5000/api/images', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: imageData, annotations }),
+            body: JSON.stringify({ image: imageData, annotations,category: selectedCategory})
         });
         if (response.ok) {
             alert('Image and annotations saved successfully!');
@@ -157,6 +158,8 @@ function toggleInputField(inputId, textId) {
         }
     });
 }
+
+
 
 
 document.addEventListener('DOMContentLoaded', () => {

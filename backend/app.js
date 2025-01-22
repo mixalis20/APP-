@@ -24,18 +24,22 @@ mongoose.connect(process.env.MONGODB_URI, {
     console.error('MongoDB connection error:', err);
 });
 
-// Αποθήκευση εικόνας, annotations και tags
+// Αποθήκευση εικόνας, annotations, tags και category
 app.post('/api/images', async (req, res) => {
-    try {
-        const { image, annotations, tags } = req.body;
-        const newImage = new Image({ image, annotations, tags });
-        await newImage.save();
-        res.status(201).json({ message: 'Image, annotations, and tags saved successfully' });
-    } catch (error) {
-        console.error('Error saving image:', error);
-        res.status(500).json({ error: 'Failed to save image, annotations, and tags' });
-    }
+  try {
+      const { image, annotations, tags, category } = req.body;  // Λήψη των πεδίων από το request body
+      const newImage = new Image({ image, annotations, tags, category });  // Δημιουργία νέας εικόνας με όλα τα πεδία
+      await newImage.save();  // Αποθήκευση της εικόνας στη βάση δεδομένων
+      res.status(201).json({ message: 'Image, annotations, tags, and category saved successfully' });
+  } catch (error) {
+      console.error('Error saving image:', error);
+      res.status(500).json({ error: 'Failed to save image, annotations, tags, and category' });
+  }
 });
+
+
+
+
 
 // Ανάκτηση εικόνων
 app.get('/api/images', async (req, res) => {
@@ -68,6 +72,39 @@ app.post('/api/images/:id/tags', async (req, res) => {
         res.status(500).json({ error: 'Failed to add tags' });
     }
 });
+
+
+app.post('/api/images', async (req, res) => {
+  try {
+      const { image, annotations, tags, category } = req.body;
+      
+      // Ελέγξτε την κατηγορία που έρχεται
+      console.log('Received category:', category);  // Ελέγξτε τι λαμβάνεται
+
+      // Διασφαλίζουμε ότι η κατηγορία είναι πίνακας από string
+      const categoryArray = Array.isArray(category) ? category : [category];
+
+      // Ελέγξτε τη μορφή της κατηγορίας
+      console.log('Processed category array:', categoryArray);  // Ελέγξτε αν μετατράπηκε σωστά
+
+      const newImage = new Image({ 
+          image, 
+          annotations, 
+          tags, 
+          category: categoryArray  // Χρησιμοποιούμε το array κατηγοριών
+      });
+
+      await newImage.save();  // Αποθήκευση της εικόνας στη βάση δεδομένων
+      res.status(201).json({ message: 'Image, annotations, tags, and category saved successfully' });
+  } catch (error) {
+      console.error('Error saving image:', error);
+      res.status(500).json({ error: 'Failed to save image, annotations, tags, and category' });
+  }
+});
+
+
+
+
 
 
 // Ενημέρωση annotation σε εικόνα

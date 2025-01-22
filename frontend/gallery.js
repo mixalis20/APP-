@@ -25,7 +25,9 @@ function displayFilteredGallery(images, category) {
     galleryDiv.innerHTML = ''; // Καθαρίζει την gallery
 
     // Φιλτράρισμα εικόνων σύμφωνα με την κατηγορία
-    const filteredImages = category === 'all' ? images : images.filter(image => image.category === category);
+    const filteredImages = category === 'all' 
+        ? images 
+        : images.filter(image => image.category && image.category.includes(category));
 
     filteredImages.forEach(imageData => {
         const container = document.createElement('div');
@@ -36,6 +38,10 @@ function displayFilteredGallery(images, category) {
         img.src = imageData.image;
         img.classList.add('gallery-image');
         container.appendChild(img);
+
+        // Εδώ μπορείς να προσθέσεις επιπλέον περιεχόμενο (π.χ. τίτλους, περιγραφές κ.λπ.)
+        galleryDiv.appendChild(container);
+   
 
         // Όταν κάνεις κλικ στην εικόνα, ανοίγει το modal
         img.addEventListener('click', () => {
