@@ -1,6 +1,6 @@
 // Εικονική βάση χρηστών για την επίδειξη
 const users = [
-    { email: 'user1@example.com', password: 'password1' },
+    { email: 'user@example.com', password: 'password1' },
     { email: 'user2@example.com', password: 'password2' },
     { email: 'user3@example.com', password: 'password3' }
 ];
@@ -17,9 +17,17 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
     // Αν βρούμε τον χρήστη, προχωράμε στην ανακατεύθυνση
     if (user) {
-        window.location.href = 'index.html';  // Ανακατεύθυνση στην αρχική σελίδα
+        // Αποθηκεύουμε την κατάσταση του χρήστη στο sessionStorage
+        sessionStorage.setItem('loggedIn', true);
+        sessionStorage.setItem('email', email);
+
+        // Ανακατεύθυνση στην αρχική σελίδα ή άλλη προστατευμένη σελίδα
+        window.location.href = 'index.html';  // Μπορείς να το αλλάξεις και σε gallery.html αν χρειάζεται
     } else {
         // Αν δεν βρούμε τον χρήστη, εμφανίζουμε το μήνυμα σφάλματος
         document.getElementById('error-message').style.display = 'block';
+        // Καθαρίζουμε τα πεδία της φόρμας για να μην παραμείνουν τα δεδομένα
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
     }
 });

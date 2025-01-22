@@ -175,5 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+// Έλεγχος αν ο χρήστης είναι συνδεδεμένος
+if (localStorage.getItem('loggedIn') !== 'true') {
+    // Αν δεν είναι συνδεδεμένος, ανακατευθύνουμε στην σελίδα login
+    window.location.href = 'login.html';
+}
 
 
