@@ -72,10 +72,24 @@ function openImageModal(imageData) {
         titleDiv.innerHTML = `<strong>Τίτλος:</strong> <span class="annotation-title">${annotation.title}</span>`;
         descriptionDiv.innerHTML = `<strong>Περιγραφή:</strong> <span class="annotation-description">${annotation.description}</span>`;
 
+
+        
+
         // Δημιουργία κουμπιού επεξεργασίας
         const editButton = document.createElement('button');
         editButton.classList.add('edit-button');
-        editButton.textContent = 'Επεξεργασία';
+        const editImage = document.createElement('img');
+        editImage.src = '/frontend/images/edit.png';  // Εδώ βάζεις την διαδρομή της εικόνας που θέλεις να εμφανίζεται στο κουμπί
+        editImage.style.width = '24px';  // Μπορείς να προσαρμόσεις το μέγεθος της εικόνας αν χρειάζεται
+        editButton.appendChild(editImage);
+
+
+        // Διασφαλίζουμε ότι το κουμπί δεν έχει background
+        editButton.style.background = 'none';
+        editButton.style.border = 'none';
+        editButton.style.padding = '0';  // Αφαιρούμε οποιοδήποτε padding υπάρχει
+        editButton.style.margin = '0';   // Αφαιρούμε margin αν υπάρχει
+
 
         editButton.addEventListener('click', () => {
             // Μετατροπή των πεδίων σε input και textarea
@@ -174,4 +188,20 @@ function displayTags(tags) {
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchGallery();
+});
+document.addEventListener('DOMContentLoaded', () => {
+    // Παίρνουμε όλα τα links από το navbar
+    const navLinks = document.querySelectorAll('.navbar a');
+
+    // Λογική για την ενεργοποίηση του σωστού κουμπιού
+    navLinks.forEach(link => {
+        // Ελέγχουμε αν η τρέχουσα διεύθυνση URL ταιριάζει με το href του συνδέσμου
+        if (window.location.href.includes(link.href)) {
+            // Προσθέτουμε την κλάση active για το επιλεγμένο link
+            link.classList.add('active');
+        } else {
+            // Αφαιρούμε την κλάση active από τα υπόλοιπα links
+            link.classList.remove('active');
+        }
+    });
 });
