@@ -55,22 +55,22 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// Σύνδεση χρήστη
 app.post('/api/auth/users', async (req, res) => {
   const { username, password } = req.body;
 
   try {
     // Αναζητούμε τον χρήστη στη βάση δεδομένων
     const user = await User.findOne({ username });
-   console.log('Found user:', user); // Εκτυπώνουμε το αποτέλεσμα της αναζήτησης για να δούμε τι επιστρέφει
+    console.log('Found user:', user); // Εκτυπώνουμε το αποτέλεσμα της αναζήτησης
+
     if (!user) {
-      return res.status(400).json({ error: 'User not found' });
+      return res.status(400).json({ error: 'User not found'});
     }
 
     // Έλεγχος του κωδικού
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(400).json({ error: 'Invalid password' });
+      return res.status(400).json({ error: 'Invalid password'});
     }
 
     // Δημιουργούμε το JWT token

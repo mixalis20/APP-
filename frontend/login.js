@@ -5,6 +5,12 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     const password = document.getElementById('password').value;
 
     try {
+        // Ελέγχουμε αν τα πεδία έχουν τιμές πριν στείλουμε το αίτημα
+        if (!username || !password) {
+            alert('Please enter both username and password.');
+            return;
+        }
+
         const response = await fetch('http://localhost:5000/api/auth/users', {
             method: 'POST',
             headers: {
@@ -13,15 +19,26 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             body: JSON.stringify({ username, password }), // Στέλνουμε το username και τον password στον server
         });
 
-        const data = await response.json();
+        // Ελέγχουμε τον status code της απόκρισης
+        console.log('Response Status:', response.status); // Θα μας δείξει τον status code
 
-        if (response.ok) {
-            // Αν η σύνδεση είναι επιτυχής, αποθηκεύουμε το token (προαιρετικά) και ανακατευθυνόμαστε
+        // Αν η απόκριση δεν είναι OK, χειριζόμαστε το σφάλμα ανάλογα
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error:', errorData); // Εμφανίζουμε το σφάλμα στον κονσόλα
+            alert(errorData.error || 'Invalid credentials. Please try again.'); // Εμφανίζουμε το σφάλμα στον χρήστη
+            return;
+        }
+
+        // Αν η σύνδεση είναι επιτυχής, αποθηκεύουμε το token και ανακατευθυνόμαστε
+        const data = await response.json();
+        console.log('Login successful, received data:', data); // Δες τι επιστρέφει ο server
+
+        if (data.token) {
             localStorage.setItem('token', data.token); // Αποθηκεύουμε το JWT token
             window.location.href = 'index.html'; // Ανακατεύθυνση στο index.html
         } else {
-            // Αν υπάρχει σφάλμα (π.χ., χρήστης δεν βρέθηκε ή λάθος κωδικός)
-            alert(data.error || 'Invalid credentials. Please try again.');
+            alert('No token received. Login failed.');
         }
     } catch (error) {
         console.error('There was an error during the login request:', error);
