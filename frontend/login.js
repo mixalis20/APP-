@@ -4,44 +4,60 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
+    // Ελέγχουμε αν τα πεδία έχουν τιμές πριν στείλουμε το αίτημα
+    if (!username || !password) {
+        showAlert('Please enter both username and password.');
+        return;
+    }
+
     try {
-        // Ελέγχουμε αν τα πεδία έχουν τιμές πριν στείλουμε το αίτημα
-        if (!username || !password) {
-            alert('Please enter both username and password.');
-            return;
-        }
+        const response = await submitLogin(username, password);
 
-        const response = await fetch('http://localhost:5000/api/auth/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }), // Στέλνουμε το username και τον password στον server
-        });
-
-        // Ελέγχουμε τον status code της απόκρισης
-        console.log('Response Status:', response.status); // Θα μας δείξει τον status code
-
-        // Αν η απόκριση δεν είναι OK, χειριζόμαστε το σφάλμα ανάλογα
         if (!response.ok) {
             const errorData = await response.json();
-            console.error('Error:', errorData); // Εμφανίζουμε το σφάλμα στον κονσόλα
-            alert(errorData.error || 'Invalid credentials. Please try again.'); // Εμφανίζουμε το σφάλμα στον χρήστη
+            console.error('Error:', errorData);
+            showAlert(errorData.error || 'Invalid credentials. Please try again.');
             return;
         }
 
-        // Αν η σύνδεση είναι επιτυχής, αποθηκεύουμε το token και ανακατευθυνόμαστε
         const data = await response.json();
-        console.log('Login successful, received data:', data); // Δες τι επιστρέφει ο server
+        console.log('Login successful, received data:', data);
 
         if (data.token) {
-            localStorage.setItem('token', data.token); // Αποθηκεύουμε το JWT token
-            window.location.href = 'index.html'; // Ανακατεύθυνση στο index.html
+            storeToken(data.token);  // Βελτιωμένη λειτουργία για αποθήκευση του token
+            redirectToHomePage(); // Βελτιωμένη ανακατεύθυνση
         } else {
-            alert('No token received. Login failed.');
+            showAlert('No token received. Login failed.');
         }
+
     } catch (error) {
         console.error('There was an error during the login request:', error);
-        alert('An error occurred. Please try again later.');
+        showAlert('An error occurred. Please try again later.');
     }
 });
+
+// Λειτουργία για την αποστολή της φόρμας στο backend
+async function submitLogin(username, password) {
+    return fetch('http://localhost:5000/api/auth/users', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    });
+}
+
+// Λειτουργία για να δείξουμε το alert
+function showAlert(message) {
+    alert(message);
+}
+
+// Λειτουργία για να αποθηκεύσουμε το token
+function storeToken(token) {
+    localStorage.setItem('token', token); // Μπορείς να το βελτιώσεις με HttpOnly cookie αν το επιθυμείς
+}
+
+// Λειτουργία για να ανακατευθυνθούμε στην αρχική σελίδα
+function redirectToHomePage() {
+    window.location.href = 'index.html';
+}
