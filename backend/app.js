@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 
 // Εισαγωγή μοντέλων
 const User = require('./models/User'); // Μοντέλο χρήστη
@@ -43,9 +42,8 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'Username already exists' });
     }
 
-    // Δημιουργούμε νέο χρήστη
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, password: hashedPassword });
+    // Δημιουργούμε νέο χρήστη χωρίς κρυπτογράφηση του κωδικού
+    const newUser = new User({ username, password });
     await newUser.save();
 
     res.status(201).json({ message: 'User created successfully' });
@@ -64,13 +62,12 @@ app.post('/api/auth/users', async (req, res) => {
     console.log('Found user:', user); // Εκτυπώνουμε το αποτέλεσμα της αναζήτησης
 
     if (!user) {
-      return res.status(400).json({ error: 'User not found'});
+      return res.status(400).json({ error: 'User not found' });
     }
 
-    // Έλεγχος του κωδικού
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(400).json({ error: 'Invalid password'});
+    // Έλεγχος του κωδικού (χωρίς bcrypt.compare)
+    if (password !== user.password) {
+      return res.status(400).json({ error: 'Invalid password' });
     }
 
     // Δημιουργούμε το JWT token
