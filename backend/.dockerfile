@@ -2,10 +2,10 @@
 FROM node:16
 
 # Ορισμός του working directory μέσα στο container
-WORKDIR /APP-/backend
+WORKDIR /app/backend
 
 # Αντιγραφή του package.json και package-lock.json για να εγκατασταθούν οι εξαρτήσεις
-COPY package*.json app.js
+COPY package*.json ./
 
 # Εγκατάσταση των εξαρτήσεων
 RUN npm install
