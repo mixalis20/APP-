@@ -14,19 +14,25 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         const response = await submitLogin(username, password);
 
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Error:', errorData);
-            showAlert(errorData.error || 'Invalid credentials. Please try again.');
-            return;
-        }
+    let errorMessage = 'Invalid credentials. Please try again.'; // Προεπιλεγμένο μήνυμα
 
-        const data = await response.json();
-        console.log('Login successful, received data:', data);
+    try {
+        const errorData = await response.json();
+        console.error('Error Response:', errorData);
 
-        if (data.token) {
-            storeToken(data.token);  // Βελτιωμένη λειτουργία για αποθήκευση του token
-            redirectToHomePage(); // Βελτιωμένη ανακατεύθυνση
-        } else {
+        // Αν υπάρχει message ή error στο JSON, χρησιμοποίησέ το
+        if (errorData.message) errorMessage = errorData.message;
+        else if (errorData.error) errorMessage = errorData.error;
+    } catch (err) {
+        console.error('Error parsing JSON response:', err);
+    }
+
+    showAlert(errorMessage);
+    return;
+}
+
+        
+ else {
             showAlert('No token received. Login failed.');
         }
 
