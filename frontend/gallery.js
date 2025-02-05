@@ -211,3 +211,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Ο έλεγχος θα γίνεται κάθε 5 λεπτά (300,000 χιλιοστά του δευτερολέπτου)
+setInterval(() => {
+    const token = localStorage.getItem('token');  // Ελέγχουμε αν υπάρχει το token
+    if (token) {
+        checkTokenExpiry(token);  // Ελέγχουμε αν έχει λήξει
+    }
+}, 300000);  // Κάθε 5 λεπτά
+
+function checkTokenExpiry(token) {
+    const decodedToken = jwt_decode(token); // Αποκωδικοποιούμε το token
+    const currentTime = Math.floor(Date.now() / 1000); // Τρέχων χρόνος σε δευτερόλεπτα
+    if (decodedToken.exp < currentTime) {
+        // Αν το token έχει λήξει
+        localStorage.removeItem('token');
+        localStorage.removeItem('loggedIn');
+        window.location.href = 'login.html'; // Ανακατεύθυνση στην login σελίδα
+    }
+}

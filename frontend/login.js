@@ -1,3 +1,5 @@
+
+
 document.getElementById('loginForm').addEventListener('submit', async function (event) {
     event.preventDefault(); // Αποτρέπει την υποβολή της φόρμας
 
@@ -30,8 +32,13 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     showAlert(errorMessage);
     return;
 }
-
-        
+const data = await response.json();
+if (data.token) {
+    storeToken(data.token); // Βελτιωμένη λειτουργία για αποθήκευση του token
+    localStorage.setItem('loggedIn', 'true'); // Ένδειξη ότι είναι συνδεδεμένος 
+    checkTokenExpiry(data.token);
+    redirectToHomePage(); // Βελτιωμένη ανακατεύθυνση
+}      
  else {
             showAlert('No token received. Login failed.');
         }
@@ -41,6 +48,40 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         showAlert('An error occurred. Please try again later.');
     }
 });
+
+
+
+// Λειτουργία για να αποθηκεύσουμε το token
+function storeToken(token) {
+    localStorage.setItem('token', token); // Μπορείς να το βελτιώσεις με HttpOnly cookie αν το επιθυμείς
+}
+
+
+// Ο έλεγχος θα γίνεται κάθε 5 λεπτά (300,000 χιλιοστά του δευτερολέπτου)
+setInterval(() => {
+    const token = localStorage.getItem('token');  // Ελέγχουμε αν υπάρχει το token
+    if (token) {
+        checkTokenExpiry(token);  // Ελέγχουμε αν έχει λήξει
+    }
+}, 300000);  // Κάθε 5 λεπτά
+function checkTokenExpiry(token) {
+    const decodedToken = jwt_decode(token); // Αποκωδικοποιούμε το token
+    const currentTime = Math.floor(Date.now() / 1000); // Τρέχων χρόνος σε δευτερόλεπτα
+    if (decodedToken.exp < currentTime) {
+        // Αν το token έχει λήξει
+        localStorage.removeItem('token');
+        localStorage.removeItem('loggedIn');
+        window.location.href = 'login.html'; // Ανακατεύθυνση στην login σελίδα
+    }
+}
+
+
+
+// Λειτουργία για να ανακατευθυνθούμε στην αρχική σελίδα
+function redirectToHomePage() {
+    window.location.href = 'index.html';
+}
+
 
 // Λειτουργία για την αποστολή της φόρμας στο backend
 async function submitLogin(username, password) {
@@ -56,14 +97,4 @@ async function submitLogin(username, password) {
 // Λειτουργία για να δείξουμε το alert
 function showAlert(message) {
     alert(message);
-}
-
-// Λειτουργία για να αποθηκεύσουμε το token
-function storeToken(token) {
-    localStorage.setItem('token', token); // Μπορείς να το βελτιώσεις με HttpOnly cookie αν το επιθυμείς
-}
-
-// Λειτουργία για να ανακατευθυνθούμε στην αρχική σελίδα
-function redirectToHomePage() {
-    window.location.href = 'index.html';
 }
