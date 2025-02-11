@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Το μοντέλο για τους χρήστες
 const router = express.Router();
 
+
 // Σύνδεση χρήστη
 router.post('/users', async (req, res) => {
   const { username, password } = req.body;
@@ -37,17 +38,21 @@ setInterval(() => {
   if (token) {
       checkTokenExpiry(token);  // Ελέγχουμε αν έχει λήξει
   }
-}, 300000);  // Κάθε 5 λεπτά
+}, 30);  // Κάθε 5 λεπτά
 function checkTokenExpiry(token) {
-  const decodedToken = jwt_decode(token); // Αποκωδικοποιούμε το token
-  const currentTime = Math.floor(Date.now() / 1000); // Τρέχων χρόνος σε δευτερόλεπτα
+  console.log("Token:", token);
+  const decodedToken = jwt_decode(token);
+  console.log("Decoded Token:", decodedToken);
+  const currentTime = Math.floor(Date.now() / 1000);
+  console.log("Current Time:", currentTime, "Token Expiry:", decodedToken.exp);
   if (decodedToken.exp < currentTime) {
-      // Αν το token έχει λήξει
+      console.log("Token expired. Redirecting to login.");
       localStorage.removeItem('token');
       localStorage.removeItem('loggedIn');
-      window.location.href = 'login.html'; // Ανακατεύθυνση στην login σελίδα
+      window.location.href = 'login.html';
   }
 }
+
 
 
 // Εγγραφή χρήστη

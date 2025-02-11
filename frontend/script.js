@@ -1,3 +1,4 @@
+import jwt_decode from 'https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.esm.js';
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let image = new Image();
@@ -191,4 +192,28 @@ if (localStorage.getItem('loggedIn') !== 'true') {
     window.location.href = 'login.html';
 }
 
+setInterval(() => {
+  const token = localStorage.getItem('token');  // Ελέγχουμε αν υπάρχει το token
+  if (token) {
+      checkTokenExpiry(token);  // Ελέγχουμε αν έχει λήξει
+  }
+}, 30);  // Κάθε 5 λεπτά
+function checkTokenExpiry(token) {
+    console.log("Token:", token);
+    const decodedToken = jwt_decode(token);
+    console.log("Decoded Token:", decodedToken);
+    const currentTime = Math.floor(Date.now() / 1000);
+    console.log("Current Time:", currentTime, "Token Expiry:", decodedToken.exp);
+    if (decodedToken.exp < currentTime) {
+        console.log("Token expired. Redirecting to login.");
+        localStorage.removeItem('token');
+        localStorage.removeItem('loggedIn');
+        window.location.href = 'login.html';
+    }
+}
 
+if (typeof jwt_decode === 'undefined') {
+    console.error('Η βιβλιοθήκη jwt_decode δεν έχει φορτωθεί.');
+} else {
+    console.log('Η βιβλιοθήκη jwt_decode έχει φορτωθεί επιτυχώς.');
+}

@@ -1,3 +1,5 @@
+import jwt_decode from 'https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.esm.js';
+
 
 
 document.getElementById('loginForm').addEventListener('submit', async function (event) {
@@ -63,17 +65,21 @@ setInterval(() => {
     if (token) {
         checkTokenExpiry(token);  // Ελέγχουμε αν έχει λήξει
     }
-}, 300000);  // Κάθε 5 λεπτά
+}, 30);  // Κάθε 5 λεπτά
 function checkTokenExpiry(token) {
-    const decodedToken = jwt_decode(token); // Αποκωδικοποιούμε το token
-    const currentTime = Math.floor(Date.now() / 1000); // Τρέχων χρόνος σε δευτερόλεπτα
+    console.log("Token:", token);
+    const decodedToken = jwt_decode(token);
+    console.log("Decoded Token:", decodedToken);
+    const currentTime = Math.floor(Date.now() / 1000);
+    console.log("Current Time:", currentTime, "Token Expiry:", decodedToken.exp);
     if (decodedToken.exp < currentTime) {
-        // Αν το token έχει λήξει
+        console.log("Token expired. Redirecting to login.");
         localStorage.removeItem('token');
         localStorage.removeItem('loggedIn');
-        window.location.href = 'login.html'; // Ανακατεύθυνση στην login σελίδα
+        window.location.href = 'login.html';
     }
 }
+
 
 
 
@@ -98,3 +104,9 @@ async function submitLogin(username, password) {
 function showAlert(message) {
     alert(message);
 }
+if (typeof jwt_decode === 'undefined') {
+    console.error('Η βιβλιοθήκη jwt_decode δεν έχει φορτωθεί.');
+} else {
+    console.log('Η βιβλιοθήκη jwt_decode έχει φορτωθεί επιτυχώς.');
+}
+
