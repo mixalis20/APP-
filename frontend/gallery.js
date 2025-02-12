@@ -41,12 +41,14 @@ function displayFilteredGallery(images, category) {
         container.appendChild(img);
 
         const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Διαγραφή';
+        deleteButton.textContent = 'Delete';
         deleteButton.classList.add('delete-button');
         deleteButton.addEventListener('click', () => {
             deleteImage(imageData._id);  // Κλήση της συνάρτησης διαγραφής
         });
 
+       
+      
        
   
         // Προσθήκη του κουμπιού διαγραφής στο container
@@ -287,7 +289,11 @@ async function deleteImage(imageId) {
 }
 
   
+
+
+
   
+    
   
   
 
