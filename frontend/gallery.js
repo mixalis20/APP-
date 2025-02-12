@@ -40,6 +40,20 @@ function displayFilteredGallery(images, category) {
         img.classList.add('gallery-image');
         container.appendChild(img);
 
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Διαγραφή';
+        deleteButton.classList.add('delete-button');
+        deleteButton.addEventListener('click', () => {
+            deleteImage(imageData._id);  // Κλήση της συνάρτησης διαγραφής
+        });
+
+       
+  
+        // Προσθήκη του κουμπιού διαγραφής στο container
+        container.appendChild(deleteButton);
+
+        
+
         // Εδώ μπορείς να προσθέσεις επιπλέον περιεχόμενο (π.χ. τίτλους, περιγραφές κ.λπ.)
         galleryDiv.appendChild(container);
    
@@ -150,6 +164,9 @@ function openImageModal(imageData) {
     // Εμφανίζουμε τα tags
     displayTags(imageData.tags || []);
 
+
+
+    
     // Προσθήκη νέων tags
     addTagsButton.onclick = async () => {
         const newTags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
@@ -212,6 +229,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+
+
+
+
 if (typeof jwt_decode === 'undefined') {
     console.error('Η βιβλιοθήκη jwt_decode δεν έχει φορτωθεί.');
 } else {
@@ -223,7 +246,7 @@ setInterval(() => {
     if (token) {
         checkTokenExpiry(token);  // Ελέγχουμε αν έχει λήξει
     }
-}, 30);  // Κάθε 5 λεπτά
+}, 30000);  // Κάθε 5 λεπτά
 
 function checkTokenExpiry(token) {
     console.log("Token:", token);
@@ -238,3 +261,33 @@ function checkTokenExpiry(token) {
         window.location.href = 'login.html';
     }
 }
+
+
+async function deleteImage(imageId) {
+    console.log("Trying to delete image with ID:", imageId); // Debugging
+
+    if (!confirm('Είσαι σίγουρος ότι θέλεις να διαγράψεις αυτή την εικόνα;')) return;
+
+    try {
+        const response = await fetch(`http://localhost:5000/api/images/${imageId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Η εικόνα διαγράφηκε επιτυχώς!');
+            fetchGallery(); // Επαναφόρτωση της gallery μετά τη διαγραφή
+        } else {
+            console.error('Σφάλμα κατά τη διαγραφή της εικόνας');
+            alert('Σφάλμα κατά τη διαγραφή της εικόνας.');
+        }
+    } catch (error) {
+        console.error('Σφάλμα:', error);
+        alert('Αποτυχία σύνδεσης με τον server.');
+    }
+}
+
+  
+  
+  
+  
+

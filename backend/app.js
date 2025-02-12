@@ -5,6 +5,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 
+
+
 // Εισαγωγή μοντέλων
 const User = require('./models/User'); // Μοντέλο χρήστη
 const Image = require('./models/Image'); // Μοντέλο εικόνας
@@ -160,6 +162,38 @@ app.put('/api/images/:id/annotations/:index', async (req, res) => {
     res.status(500).json({ error: 'Failed to update annotation' });
   }
 });
+
+
+
+const { ObjectId } = require('mongodb'); // Βεβαιώσου ότι το ObjectId είναι σωστά δηλωμένο
+
+app.delete('/api/images/:id', async (req, res) => {
+  try {
+    const imageId = req.params.id;
+    console.log("Deleting image with ID:", imageId);
+
+    // Βεβαιώσου ότι το ID είναι έγκυρο
+    if (!ObjectId.isValid(imageId)) {
+      return res.status(400).json({ message: "Invalid ID." });
+    }
+
+    // Χρησιμοποιούμε το μοντέλο Image για τη διαγραφή της εικόνας
+    const result = await Image.deleteOne({ _id: new ObjectId(imageId) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Image not found." });
+    }
+
+    return res.status(200).json({ message: "Image deleted successfully." });
+
+  } catch (error) {
+    console.error("Error during image deletion:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+
+
 
 // Εκκίνηση του server
 app.listen(5000, () => {

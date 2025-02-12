@@ -13,6 +13,7 @@ const imageSchema = new mongoose.Schema({
       type: [String], // Πίνακας από strings
       required: false, // Δεν είναι υποχρεωτικό να έχει κατηγορία
   },// Εδώ χρησιμοποιούμε πίνακα με τύπο String
+  
 });
 
 module.exports = mongoose.model('Image', imageSchema);

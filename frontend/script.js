@@ -197,7 +197,7 @@ setInterval(() => {
   if (token) {
       checkTokenExpiry(token);  // Ελέγχουμε αν έχει λήξει
   }
-}, 30);  // Κάθε 5 λεπτά
+}, 30000);  // Κάθε 5 λεπτά
 function checkTokenExpiry(token) {
     console.log("Token:", token);
     const decodedToken = jwt_decode(token);
