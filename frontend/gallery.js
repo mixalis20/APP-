@@ -47,13 +47,17 @@ function displayFilteredGallery(images, category) {
             deleteImage(imageData._id);  // Κλήση της συνάρτησης διαγραφής
         });
 
-       
+       // Δημιουργία κουμπιού "Λήψη"
+       const downloadBtn = document.createElement('button');
+       downloadBtn.innerText = 'Download';
+       downloadBtn.classList.add('download-btn');
+       downloadBtn.addEventListener('click', () => downloadImage(imageData.image));
       
        
   
         // Προσθήκη του κουμπιού διαγραφής στο container
         container.appendChild(deleteButton);
-
+        container.appendChild(downloadBtn);
         
 
         // Εδώ μπορείς να προσθέσεις επιπλέον περιεχόμενο (π.χ. τίτλους, περιγραφές κ.λπ.)
@@ -288,7 +292,14 @@ async function deleteImage(imageId) {
     }
 }
 
-  
+function downloadImage(imageUrl) {
+    const a = document.createElement('a');
+    a.href = imageUrl;
+    a.download = 'image.jpg';  // Ο χρήστης θα κατεβάσει την εικόνα ως "image.jpg"
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
 
 
 
