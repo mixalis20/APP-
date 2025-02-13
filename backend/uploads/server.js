@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const app = express();
-const port = 5000;
+const PORT = 5000;
 
 //Εξυπηρέτηση στατικών αρχείων από τον κατάλογο "uploads"
 app.use('/upload', express.static('uploads'));
