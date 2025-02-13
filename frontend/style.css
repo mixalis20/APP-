@@ -310,3 +310,95 @@ input[type="number"] {
   background-color: black;
   cursor: pointer;
 }
+
+/* Light Mode (Default) */
+body {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Apply Dark Mode to Various Elements */
+.dark-mode .navbar,
+.dark-mode .box,
+.dark-mode .container,
+.dark-mode .card,
+.dark-mode input,
+.dark-mode textarea,
+.dark-mode select {
+  background-color: #1e1e1e;
+  color: white;
+  border: 1px solid #555;
+}
+
+.dark-mode button {
+  background-color: #333;
+  color: white;
+  border: 1px solid #666;
+}
+
+.dark-mode button:hover {
+  background-color: #555;
+}
+
+.dark-mode .modal-content {
+  background-color: #222;
+  color: white;
+  border: 1px solid #444;
+}
+
+.dark-mode #canvas {
+  background-color: #222;
+  border: 5px solid #444;
+}
+
+.dark-mode .navbar ul li a {
+  background-color: #2c2c2c;
+  color: white;
+}
+
+.dark-mode .navbar ul li a:hover {
+  background-color: #444;
+  color: #ddd;
+}
+
+.dark-mode input[type="file"],
+.dark-mode input[type="number"] {
+  background-color: #1e1e1e;
+  color: white;
+  border: 1px solid #555;
+}
+
+/* Dark Mode Toggle Button */
+#darkModeToggle {
+  position: fixed;
+  top: 58px;
+  right: 10px;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  background-color: #333;
+  color: white;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+#darkModeToggle:hover {
+  background-color: #555;
+}
+.dark-mode #resize-button,
+.dark-mode #saveButton {
+  background-color: #444; /* Σκούρο γκρι */
+  color: white;
+  border: 1px solid #666;
+}
+
+.dark-mode #resize-button:hover,
+.dark-mode #saveButton:hover {
+  background-color: #666; /* Λίγο πιο φωτεινό γκρι */
+}
