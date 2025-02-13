@@ -300,8 +300,42 @@ function downloadImage(imageUrl) {
     a.click();
     document.body.removeChild(a);
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+// Ελέγχουμε αν υπάρχει ήδη αποθηκευμένη προτίμηση
+if (localStorage.getItem('darkMode') === 'enabled') {
+    enableDarkMode();
+}
 
+darkModeToggle.addEventListener('click', () => {
+    if (body.classList.contains('dark-mode')) {
+        disableDarkMode();
+    } else {
+        enableDarkMode();
+    }
+});
 
+function enableDarkMode() {
+    body.classList.add('dark-mode');
+    document.querySelectorAll('.box, .container, .card, input, textarea, button,h1,canvas,body').forEach(el => {
+        el.classList.add('dark-mode');
+    });
+
+    localStorage.setItem('darkMode', 'enabled');
+    darkModeToggle.innerText = '☀️ Light Mode';
+}
+
+function disableDarkMode() {
+    body.classList.remove('dark-mode');
+    document.querySelectorAll('.box, .container, .card, input, textarea, button,h1,canvas,body').forEach(el => {
+        el.classList.remove('dark-mode');
+    });
+
+    localStorage.setItem('darkMode', 'disabled');
+    darkModeToggle.innerText = '🌙 Dark Mode';
+}
+});
 
   
     
