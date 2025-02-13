@@ -23,7 +23,7 @@ router.post('/users', async (req, res) => {
     }
 
     // Δημιουργία του JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '5m' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
     res.status(200).json({ message: 'Login successful', token }); // Επιστροφή επιτυχίας
   } catch (error) {
@@ -38,7 +38,7 @@ setInterval(() => {
   if (token) {
       checkTokenExpiry(token);  // Ελέγχουμε αν έχει λήξει
   }
-}, 30);  // Κάθε 5 λεπτά
+}, 30000);  // Κάθε 5 λεπτά
 function checkTokenExpiry(token) {
   console.log("Token:", token);
   const decodedToken = jwt_decode(token);

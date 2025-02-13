@@ -73,7 +73,7 @@ app.post('/api/auth/users', async (req, res) => {
     }
 
     // Δημιουργούμε το JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '3m' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
     res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
