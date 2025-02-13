@@ -59,8 +59,8 @@ body {
   border: 1px solid #ccc;
   margin-bottom: 10px;
   border-radius: 5px;
-  background-color: #f9f9f9;
-  ;
+  
+  
 }
 
 .annotation h3 {
@@ -254,7 +254,7 @@ select:hover {
 
 /* Στυλ για την τοποθέτηση του dropdown στην σελίδα */
 #categoryFilter {
-  margin-top: 10px;
+  margin-top: 50px;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -273,7 +273,7 @@ select:hover {
 label{
   color: white;
   position: absolute; /* Απόλυτη τοποθέτηση */
-  top: 70px; /* Απόσταση από το επάνω μέρος της οθόνης (κάτω από το navbar) */
+  top: 100px; /* Απόσταση από το επάνω μέρος της οθόνης (κάτω από το navbar) */
   right: 20px; /* Απόσταση από τη δεξιά πλευρά της οθόνης */
 }
 h4{
