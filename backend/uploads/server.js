@@ -31,7 +31,7 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 //Εξυπηρέτηση της σελίδας HTML για τον πελάτη
 app.get('/', (req, res) => {
-    res.sendFile('APP-\frontend' + '/index.html');
+    res.sendFile(path.join(__dirname, 'APP-frontend', 'index.html'));
 });
 
 app.listen(PORT, () => {
