@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 // Εισαγωγή μοντέλων
 const User = require('./models/User'); // Μοντέλο χρήστη
 const Image = require('./models/Image'); // Μοντέλο εικόνας
+const SoftDelete = require('./models/softdelete'); // Μοντέλο Soft-delete
 
 dotenv.config(); // Φορτώνει τις περιβαλλοντικές μεταβλητές από το .env αρχείο
 
@@ -193,7 +194,42 @@ app.delete('/api/images/:id', async (req, res) => {
 });
 
 
+const softDeleteImage = async (imageId) => {
+  try {
+    const image = await Image.findById(imageId); // Check if the image exists
+    if (!image) {
+      console.log('Image not found');
+      return; // Exit early if image does not exist
+    }
 
+    // Soft delete the image by setting the `deletedAt` field
+    const result = await Image.findByIdAndUpdate(
+      imageId, 
+      { deletedAt: new Date() }, 
+      { new: true } // Ensure that the updated document is returned
+    );
+
+    if (result) {
+      console.log(`Image soft-deleted: ${result.name}`);
+    } else {
+      console.log('Error during soft delete');
+    }
+  } catch (error) {
+    console.error('Error soft deleting the image:', error);
+  }
+};
+
+
+app.delete('/api/images/:id/soft', async (req, res) => {
+  try {
+    const imageId = req.params.id;
+    await softDeleteImage(imageId);
+    res.status(200).send('Image soft deleted');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error deleting the image');
+  }
+});
 
 
 // Εκκίνηση του server
