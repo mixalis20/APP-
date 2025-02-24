@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 // Εισαγωγή μοντέλων
 const User = require('./models/User'); // Μοντέλο χρήστη
 const Image = require('./models/Image'); // Μοντέλο εικόνας
-const SoftDelete = require('./models/softdelete'); // Μοντέλο Soft-delete
+
 
 dotenv.config(); // Φορτώνει τις περιβαλλοντικές μεταβλητές από το .env αρχείο
 
@@ -90,13 +90,14 @@ app.post('/api/auth/users', async (req, res) => {
 // Αποθήκευση εικόνας
 app.post('/api/images', async (req, res) => {
   try {
-    const { image, annotations, tags, category } = req.body;
+    const { image, annotations, tags, category,deleted } = req.body;
 
     const newImage = new Image({
       image,
       annotations,
       tags,
       category,
+      deleted: deleted || false,
     });
 
     await newImage.save();
@@ -110,13 +111,14 @@ app.post('/api/images', async (req, res) => {
 // Ανάκτηση εικόνων
 app.get('/api/images', async (req, res) => {
   try {
-    const images = await Image.find();
-    res.status(200).json(images);
-  } catch (error) {
-    console.error('Error fetching images:', error);
-    res.status(500).json({ error: 'Failed to fetch images' });
+      const images = await Image.find(); // Χωρίς φίλτρο!
+      res.json(images);
+  } catch (err) {
+      res.status(500).json({ error: 'Σφάλμα φόρτωσης εικόνων' });
   }
 });
+
+
 
 // Προσθήκη tags σε εικόνα
 app.post('/api/images/:id/tags', async (req, res) => {
@@ -143,6 +145,7 @@ app.put('/api/images/:id/annotations/:index', async (req, res) => {
   try {
     const { id, index } = req.params;
     const { title, description } = req.body;
+    
 
     const image = await Image.findById(id);
     if (!image) {
@@ -164,72 +167,60 @@ app.put('/api/images/:id/annotations/:index', async (req, res) => {
   }
 });
 
+app.put('/api/images/:id', (req, res) => {
+  const imageId = req.params.id;
+  const { deleted } = req.body;
+  
+  // Ενημέρωση της εικόνας στη βάση δεδομένων
+  Image.findByIdAndUpdate(imageId, { deleted }, { new: true }, (err, updatedImage) => {
+      if (err) {
+          return res.status(500).json({ message: 'Σφάλμα κατά την ενημέρωση της εικόνας' });
+      }
+      if (!updatedImage) {
+          return res.status(404).json({ message: 'Η εικόνα δεν βρέθηκε' });
+      }
+      res.json(updatedImage);
+  });
+});
 
 
-const { ObjectId } = require('mongodb'); // Βεβαιώσου ότι το ObjectId είναι σωστά δηλωμένο
 
 app.delete('/api/images/:id', async (req, res) => {
   try {
     const imageId = req.params.id;
-    console.log("Deleting image with ID:", imageId);
+    console.log("Soft deleting image with ID:", imageId);
 
-    // Βεβαιώσου ότι το ID είναι έγκυρο
-    if (!ObjectId.isValid(imageId)) {
+    // Βεβαίωση ότι το ID είναι έγκυρο
+    if (!mongoose.Types.ObjectId.isValid(imageId)) {
       return res.status(400).json({ message: "Invalid ID." });
     }
 
-    // Χρησιμοποιούμε το μοντέλο Image για τη διαγραφή της εικόνας
-    const result = await Image.deleteOne({ _id: new ObjectId(imageId) });
+    // Ενημέρωση του πεδίου deleted σε true
+    const result = await Image.findByIdAndUpdate(
+      imageId,
+      { $set: { deleted: true } },
+      { new: true }
+    );
 
-    if (result.deletedCount === 0) {
+    if (!result) {
       return res.status(404).json({ message: "Image not found." });
     }
 
-    return res.status(200).json({ message: "Image deleted successfully." });
+    return res.status(200).json({ message: "Image soft deleted successfully." });
 
   } catch (error) {
-    console.error("Error during image deletion:", error);
+    console.error("Error during image soft deletion:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 });
 
 
-const softDeleteImage = async (imageId) => {
-  try {
-    const image = await Image.findById(imageId); // Check if the image exists
-    if (!image) {
-      console.log('Image not found');
-      return; // Exit early if image does not exist
-    }
-
-    // Soft delete the image by setting the `deletedAt` field
-    const result = await Image.findByIdAndUpdate(
-      imageId, 
-      { deletedAt: new Date() }, 
-      { new: true } // Ensure that the updated document is returned
-    );
-
-    if (result) {
-      console.log(`Image soft-deleted: ${result.name}`);
-    } else {
-      console.log('Error during soft delete');
-    }
-  } catch (error) {
-    console.error('Error soft deleting the image:', error);
-  }
-};
 
 
-app.delete('/api/images/:id/soft', async (req, res) => {
-  try {
-    const imageId = req.params.id;
-    await softDeleteImage(imageId);
-    res.status(200).send('Image soft deleted');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error deleting the image');
-  }
-});
+
+
+
+
 
 
 // Εκκίνηση του server

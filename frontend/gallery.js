@@ -2,9 +2,13 @@ import jwt_decode from 'https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-
 async function fetchGallery() {
     try {
         const response = await fetch('http://localhost:5000/api/images');
-        const images = await response.json();
+        let images = await response.json();
+        console.log(images);  
+        images = images.filter(image => !image.deleted);
         const galleryDiv = document.getElementById('gallery');
         galleryDiv.innerHTML = ''; // Καθαρίζει την gallery
+
+        
 
         // Φίλτρο κατηγορίας
         const categoryFilter = document.getElementById('categoryFilter');
@@ -25,9 +29,9 @@ function displayFilteredGallery(images, category) {
     const galleryDiv = document.getElementById('gallery');
     galleryDiv.innerHTML = ''; // Καθαρίζει την gallery
 
-    // Φιλτράρισμα εικόνων σύμφωνα με την κατηγορία
+    // Φιλτράρισμα εικόνας σύμφωνα με την κατηγορία
     const filteredImages = category === 'all' 
-        ? images 
+    ? images.filter(image => !image.deleted)  // Φιλτράρισμα με βάση το deleted
         : images.filter(image => image.category && image.category.includes(category));
 
     filteredImages.forEach(imageData => {
@@ -47,31 +51,26 @@ function displayFilteredGallery(images, category) {
             deleteImage(imageData._id);  // Κλήση της συνάρτησης διαγραφής
         });
 
-       // Δημιουργία κουμπιού "Λήψη"
-       const downloadBtn = document.createElement('button');
-       downloadBtn.innerText = 'Download';
-       downloadBtn.classList.add('download-btn');
-       downloadBtn.addEventListener('click', () => downloadImage(imageData.image));
-      
-       
-  
+        // Δημιουργία κουμπιού "Λήψη"
+        const downloadBtn = document.createElement('button');
+        downloadBtn.innerText = 'Download';
+        downloadBtn.classList.add('download-btn');
+        downloadBtn.addEventListener('click', () => downloadImage(imageData.image));
+
         // Προσθήκη του κουμπιού διαγραφής στο container
         container.appendChild(deleteButton);
         container.appendChild(downloadBtn);
-        
 
-        // Εδώ μπορείς να προσθέσεις επιπλέον περιεχόμενο (π.χ. τίτλους, περιγραφές κ.λπ.)
+        // Προσθήκη της εικόνας στο div της gallery
         galleryDiv.appendChild(container);
-   
 
         // Όταν κάνεις κλικ στην εικόνα, ανοίγει το modal
         img.addEventListener('click', () => {
             openImageModal(imageData);
         });
-
-        galleryDiv.appendChild(container);
     });
 }
+
 
 // Συνάρτηση για να ανοίξει το modal με την εικόνα και τις πληροφορίες
 function openImageModal(imageData) {
@@ -337,7 +336,7 @@ function disableDarkMode() {
 }
 });
 
-  
+
     
   
   
