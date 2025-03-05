@@ -199,26 +199,24 @@ app.delete('/api/images/:id', async (req, res) => {
     const result = await Image.findByIdAndUpdate(
       imageId,
       { $set: { deleted: true } },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!result) {
       return res.status(404).json({ message: "Image not found." });
     }
 
-    return res.status(200).json({ message: "Image soft deleted successfully." });
+    return res.status(200).json({
+      message: "Image soft deleted successfully.",
+      imageId: result._id, // Στέλνει πίσω το αναγνωριστικό εικόνας στην απάντηση
+      deletedImage: result // Επιστρέφει το ενημερωμένο αντικείμενο εικόνας
+    });
 
   } catch (error) {
     console.error("Error during image soft deletion:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 });
-
-
-
-
-
-
 
 
 
