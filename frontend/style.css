@@ -415,3 +415,31 @@ body.dark-mode {
 .dark-mode #saveButton:hover {
   background-color: #666; /* Λίγο πιο φωτεινό γκρι */
 }
+
+.message-box {
+  position: fixed;
+  top: -50px; /* Ξεκινάει εκτός οθόνης */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #444;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  font-weight: bold;
+  opacity: 0;
+  transition: top 0.5s ease, opacity 0.5s ease;
+}
+
+/* Χρωματιστά μηνύματα ανάλογα με τον τύπο */
+.message-box.success { background-color: #28a745; } /* Πράσινο για επιτυχία */
+.message-box.error { background-color: #dc3545; }   /* Κόκκινο για λάθος */
+.message-box.warning { background-color: #ffc107; } /* Κίτρινο για προειδοποίηση */
+.message-box.info { background-color: #17a2b8; }    /* Μπλε για πληροφορίες */
+
+/* Εμφάνιση με animation */
+.message-box.show {
+  top: 55px; /* Κατεβαίνει στη θέση του */
+  opacity: 1;
+}

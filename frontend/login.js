@@ -1,7 +1,24 @@
 import jwt_decode from 'https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.esm.js';
 
 
+function showMessage(message, type = 'info') {
+    const messageBox = document.getElementById('messageBox');
+    
+    messageBox.textContent = message;
+    messageBox.className = `message-box ${type}`;
+    messageBox.style.display = 'block';
+    
+    // Κινούμενη εμφάνιση
+    messageBox.classList.add('show');
 
+    // Αυτόματο κλείσιμο μετά από 3 δευτερόλεπτα
+    setTimeout(() => {
+        messageBox.classList.remove('show'); // Απόκρυψη με animation
+        setTimeout(() => {
+            messageBox.style.display = 'none';
+        }, 500);
+    }, 3000);
+}
 document.getElementById('loginForm').addEventListener('submit', async function (event) {
     event.preventDefault(); // Αποτρέπει την υποβολή της φόρμας
 
@@ -10,7 +27,8 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
     // Ελέγχουμε αν τα πεδία έχουν τιμές πριν στείλουμε το αίτημα
     if (!username || !password) {
-        showAlert('Please enter both username and password.');
+        showMessage('Παρακαλω εισαγετε Username και Password!','warnig');
+        //showAlert('Please enter both username and password.');
         return;
     }
 
@@ -47,7 +65,9 @@ if (data.token) {
 
     } catch (error) {
         console.error('There was an error during the login request:', error);
-        showAlert('An error occurred. Please try again later.');
+        showMessage('Σφαλμα!!. Παρακαλω προσπαθηστε αργοτερα.','error');
+        //showAlert('An error occurred. Please try again later.');
+
     }
 });
 
@@ -65,7 +85,7 @@ setInterval(() => {
     if (token) {
         checkTokenExpiry(token);  // Ελέγχουμε αν έχει λήξει
     }
-}, 30);  // Κάθε 5 λεπτά
+}, 3000);  // Κάθε 5 λεπτά
 function checkTokenExpiry(token) {
     console.log("Token:", token);
     const decodedToken = jwt_decode(token);

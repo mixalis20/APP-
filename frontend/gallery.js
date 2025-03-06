@@ -23,6 +23,24 @@ async function fetchGallery() {
         console.error('Error fetching gallery:', error);
     }
 }
+function showMessage(message, type = 'info') {
+    const messageBox = document.getElementById('messageBox');
+    
+    messageBox.textContent = message;
+    messageBox.className = `message-box ${type}`;
+    messageBox.style.display = 'block';
+    
+    // Κινούμενη εμφάνιση
+    messageBox.classList.add('show');
+
+    // Αυτόματο κλείσιμο μετά από 3 δευτερόλεπτα
+    setTimeout(() => {
+        messageBox.classList.remove('show'); // Απόκρυψη με animation
+        setTimeout(() => {
+            messageBox.style.display = 'none';
+        }, 500);
+    }, 3000);
+}
 
 // Συνάρτηση για εμφάνιση φιλτραρισμένων εικόνων στην gallery
 function displayFilteredGallery(images, category) {
@@ -279,15 +297,15 @@ async function deleteImage(imageId) {
         });
 
         if (response.ok) {
-            alert('Η εικόνα διαγράφηκε επιτυχώς!');
+            showMessage('Η εικόνα διαγράφηκε επιτυχώς!', 'success');
             fetchGallery(); // Επαναφόρτωση της gallery μετά τη διαγραφή
         } else {
             console.error('Σφάλμα κατά τη διαγραφή της εικόνας');
-            alert('Σφάλμα κατά τη διαγραφή της εικόνας.');
+            showMessage('Σφάλμα κατά τη διαγραφή της εικόνας.', 'error');
         }
     } catch (error) {
         console.error('Σφάλμα:', error);
-        alert('Αποτυχία σύνδεσης με τον server.');
+        showMessage('Αποτυχία σύνδεσης με τον server.', 'warning');
     }
 }
 

@@ -7,6 +7,29 @@ let isDrawing = false;
 let startX, startY, endX, endY;
 let currentAnnotation = null;
 
+
+function showMessage(message, type = 'info') {
+    const messageBox = document.getElementById('messageBox');
+    
+    messageBox.textContent = message;
+    messageBox.className = `message-box ${type}`;
+    messageBox.style.display = 'block';
+    
+    // Κινούμενη εμφάνιση
+    messageBox.classList.add('show');
+
+    // Αυτόματο κλείσιμο μετά από 3 δευτερόλεπτα
+    setTimeout(() => {
+        messageBox.classList.remove('show'); // Απόκρυψη με animation
+        setTimeout(() => {
+            messageBox.style.display = 'none';
+        }, 500);
+    }, 3000);
+}
+
+
+
+
 document.getElementById('upload').addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -106,7 +129,8 @@ document.getElementById('applyResize').addEventListener('click', () => {
 
         document.getElementById('resizeModal').style.display = 'none';
     } else {
-        alert('Please enter both width and height.');
+        showMessage('Παρακαλώ εισάγετε και τα δύο πεδία: Πλάτος και Ύψος.', 'error');
+
     }
 });
 
@@ -129,9 +153,10 @@ document.getElementById('saveButton').addEventListener('click', async () => {
             body: JSON.stringify({ image: imageData, annotations,category: selectedCategory})
         });
         if (response.ok) {
-            alert('Image and annotations saved successfully!');
+            showMessage('Η εικόνα και οι σημειώσεις αποθηκεύτηκαν επιτυχώς!', 'success');
         } else {
-            alert('Failed to save image and annotations');
+            showMessage('Αποτυχία αποθήκευσης εικόνας και σημειώσεων.', 'error');
+
         }
     } catch (error) {
         console.error('Error saving image and annotations:', error);
