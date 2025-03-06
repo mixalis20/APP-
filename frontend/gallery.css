@@ -50,18 +50,20 @@ body {
   position: relative;
   width: 300px;
   height: 255px;
-  margin: 20px 0; /* Δημιουργεί χώρο πάνω και κάτω από την εικόνα */
+  margin: 20px 0;
   padding: 10px;
-  border-radius: 10px; /* Στρογγυλεμένες γωνίες για καλύτερη εμφάνιση */
+  border-radius: 10px;
 }
 
 .image-container img {
   width: 100%;
-  height: auto;
+  height: 100%; 
+  object-fit: cover; 
   display: block;
-  margin-bottom: 15px; /* Δημιουργεί χώρο κάτω από την εικόνα */
+  margin-bottom: 15px;
   border-radius: 5px;
 }
+
 
 .annotation {
   padding: 7px;
@@ -90,32 +92,37 @@ body {
 
 
 
-/* General Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
 /* Modal content container */
 .modal-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    position: relative;
-    margin: 50px auto;
-    background-color: white;
-    padding: 20px;
-    max-width: 800px;
-    max-height: 600px;
-    border-radius: 8px;
+  display: flex;
+  justify-content: center;  /* Κεντράρισμα περιεχομένου */
+  align-items: center;  /* Κεντράρισμα περιεχομένου */
+  position: relative;
+  margin: 50px auto;
+  background-color: white;
+  padding: 20px;
+  max-width: 800px;
+  max-height: 600px;
+  border-radius: 8px;
+}
+
+/* Στυλ για τις εικόνες μέσα στο modal */
+.modal-content img {
+  width: 100%;  /* Εικόνα να καλύπτει το 100% του πλάτους */
+  height: 100%;  /* Εικόνα να καλύπτει το 100% του ύψους */
+  object-fit: cover;  
+}
+
+/* Στυλ για το overlay (παρασκηνιακό σκοτάδι γύρω από το modal) */
+.modal-overlay {
+  display: none;  /* Αρχικά κρυφό */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 /* Close button */
