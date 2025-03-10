@@ -99,6 +99,18 @@ function openImageModal(imageData) {
     const addTagsButton = document.getElementById('addTagsButton');
     const imageTagsContainer = document.getElementById('imageTags');
 
+     // Βάζουμε το μέγεθος που δηλώθηκε στο resize
+     if (imageData.width && imageData.height) {
+        modalImage.style.width = `${imageData.width}px`;
+        modalImage.style.height = `${imageData.height}px`;
+    } else {
+        modalImage.style.width = 'auto';
+        modalImage.style.height = 'auto';
+    }
+
+    modalImage.src = imageData.image;
+    modal.style.display = 'block';
+
     // Ορίζουμε την εικόνα στο modal
     modalImage.src = imageData.image;
 

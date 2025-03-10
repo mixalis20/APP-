@@ -15,11 +15,13 @@ img {
 #gallery {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 20px;
-  padding: 20px;
-  box-sizing: border-box;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 60px;
+  padding-bottom: 20px;
 }
+
+
 body {
   margin: 0;
   padding: 0;
@@ -90,7 +92,21 @@ body {
   color: #003366;
 }
 
+.modal{
+  display: none;
+  position: fixed;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3 ease;
+  
 
+  
+}
 
 /* Modal content container */
 .modal-content {
@@ -399,7 +415,7 @@ body.dark-mode {
 /* Dark Mode Toggle Button */
 #darkModeToggle {
   position: fixed;
-  top: 58px;
+  top: 60px;
   right: 10px;
   padding: 10px 15px;
   border: none;
@@ -408,6 +424,7 @@ body.dark-mode {
   color: white;
   border-radius: 5px;
   font-size: 14px;
+  z-index: 9999;
 }
 
 #darkModeToggle:hover {
@@ -439,6 +456,7 @@ body.dark-mode {
   font-weight: bold;
   opacity: 0;
   transition: top 0.5s ease, opacity 0.5s ease;
+  z-index: 9999;
 }
 
 /* Χρωματιστά μηνύματα ανάλογα με τον τύπο */

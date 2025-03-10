@@ -68,6 +68,8 @@ canvas.addEventListener('mousemove', (e) => {
 
 canvas.addEventListener('mouseup', () => {
     isDrawing = false;
+
+    // Δημιουργία του annotation
     const annotation = {
         x: Math.min(startX, endX),
         y: Math.min(startY, endY),
@@ -76,9 +78,11 @@ canvas.addEventListener('mouseup', () => {
         title: document.getElementById('titleInput').value || 'Enter annotation title...',
         description: document.getElementById('descriptionInput').value || 'Enter annotation description...',
     };
-    
 
+    // Προσθήκη του annotation στη λίστα
     annotations.push(annotation);
+
+    // Επανασχεδίαση της εικόνας και των annotations
     ctx.drawImage(image, 0, 0);
     annotations.forEach(annotation => {
         ctx.strokeStyle = 'blue';
@@ -88,8 +92,10 @@ canvas.addEventListener('mouseup', () => {
         ctx.fillText(annotation.title, annotation.x, annotation.y - 5);
     });
 
-    // Show annotation box for editing
-    showAnnotationBox(annotation);
+    // Επαναφορά των πεδίων τίτλου και περιγραφής στα κενά
+    document.getElementById('titleInput').value = ''; 
+    document.getElementById('descriptionInput').value = '';
+       
 });
 function showAnnotationBox(annotation) {
     currentAnnotation = annotation;
@@ -117,6 +123,10 @@ document.getElementById('applyResize').addEventListener('click', () => {
         canvas.width = newWidth;
         canvas.height = newHeight;
         ctx.drawImage(image, 0, 0, newWidth, newHeight); // Re-draw image with new dimensions
+
+        // Αποθηκεύουμε τις νέες διαστάσεις στην εικόνα
+        image.width = newWidth;
+        image.height = newHeight;
 
         // Re-draw annotations based on new canvas size
         annotations.forEach(annotation => {
