@@ -95,7 +95,7 @@ canvas.addEventListener('mouseup', () => {
     // Επαναφορά των πεδίων τίτλου και περιγραφής στα κενά
     document.getElementById('titleInput').value = ''; 
     document.getElementById('descriptionInput').value = '';
-       
+
 });
 function showAnnotationBox(annotation) {
     currentAnnotation = annotation;
@@ -276,6 +276,10 @@ document.addEventListener('DOMContentLoaded', () => {
             el.classList.add('dark-mode');
         });
 
+        // Αλλαγή φόντου για dark mode
+        body.style.backgroundColor = "#121212";  // Μαύρο ή σκοτεινό φόντο
+
+
         localStorage.setItem('darkMode', 'enabled');
         darkModeToggle.innerText = '☀️ Light Mode';
     }
@@ -285,6 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.box, .container, .card, input, textarea, button,h1,canvas,body').forEach(el => {
             el.classList.remove('dark-mode');
         });
+
+        // Επαναφορά φόντου για light mode
+        body.style.backgroundColor = "#ffffff";  // Λευκό φόντο
 
         localStorage.setItem('darkMode', 'disabled');
         darkModeToggle.innerText = '🌙 Dark Mode';

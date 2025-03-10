@@ -349,16 +349,27 @@ h4{
 }
 
 
-/* Light Mode (Default) */
-body {
-  background-color: #ffffff;
-  color: #000000;
-}
+
 
 /* Dark Mode */
 body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #808080, #121212);
+  color: white;
+  font-family: 'Verdana', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: auto;
+  width: auto;
+  box-sizing: border-box;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin-top: 60px;
+  border: none; /* Αφαιρεί οποιοδήποτε πλαίσιο */
+  box-shadow: none; /* Αφαιρεί οποιαδήποτε σκιά */
 }
 
 /* Apply Dark Mode to Various Elements */

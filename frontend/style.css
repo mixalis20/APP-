@@ -3,9 +3,12 @@
     background-color: lightblue;
   }
 }
+
 .container {
   width: 90%;
   font-size: 1.2rem;
+  border: none;
+  box-shadow: none;
 }
 img {
   max-width: 100%;
@@ -15,9 +18,9 @@ img {
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom, #2c3e50, #4ca1af); /* Από σκοτεινό μπλε σε φωτεινό μπλε */
-  color: white; /* Λευκό χρώμα κειμένου */
-  font-family: 'Verdana', sans-serif; /* Γραμματοσειρά για καλή ανάγνωση */
+  background: linear-gradient(to bottom, #2c3e50, #4ca1af); /* Από χρώμα στο φόντο */
+  color: white;
+  font-family: 'Verdana', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,8 +31,9 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   margin-top: 60px;
+  border: none; /* Αφαιρεί οποιοδήποτε πλαίσιο */
+  box-shadow: none; /* Αφαιρεί οποιαδήποτε σκιά */
 }
-
 h1 {
   font-size: 2.5rem;
   color: white;
@@ -169,21 +173,7 @@ h1 {
   border-bottom: 2px solid #007bff; /* Μπορείς να προσθέσεις και μια γραμμή κάτω από το ενεργό link */
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-  #navbar ul {
-    flex-direction: column;
-  }
 
-  #navbar ul li {
-    margin: 10px 0;
-  }
-
-  #navbar ul li a {
-    font-size: 16px;
-    padding: 10px;
-  }
-}
 
 /* CSS για το κουμπί αλλαγής μεγέθους */
 #resize-button {
@@ -324,17 +314,30 @@ input[type="number"] {
   cursor: pointer;
 }
 
-/* Light Mode (Default) */
-body {
-  background-color: #ffffff;
-  color: #000000;
-}
+
 
 /* Dark Mode */
 body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #808080, #121212);
+  color: white;
+  font-family: 'Verdana', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: auto;
+  width: auto;
+  box-sizing: border-box;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin-top: 60px;
+  border: none; /* Αφαιρεί οποιοδήποτε πλαίσιο */
+  box-shadow: none; /* Αφαιρεί οποιαδήποτε σκιά */
 }
+
+
 
 /* Apply Dark Mode to Various Elements */
 .dark-mode .navbar,
@@ -344,7 +347,7 @@ body.dark-mode {
 .dark-mode input,
 .dark-mode textarea,
 .dark-mode select {
-  background-color: #1e1e1e;
+  background-color: #1e1e1e !important;
   color: white;
   border: 1px solid #555;
 }
