@@ -151,8 +151,14 @@ document.getElementById('saveButton').addEventListener('click', async () => {
     const selectedCategory = document.getElementById('category').value; // Λήψη επιλεγμένης κατηγορίας
 
     // Έλεγχος αν η εικόνα υπάρχει και αν έχει επιλεγεί κατηγορία
-    if (!imageData || imageData === '') {
-        alert('Παρακαλώ επιλέξτε μια εικόνα και κατηγορία πριν αποθηκεύσετε!');
+    if (!imageData || imageData === '' || !image || !image.src) {
+        showMessage('Παρακαλώ επιλέξτε μια εικόνα πριν αποθηκεύσετε!', 'error');
+        return;
+    }
+
+    // Έλεγχος αν έχει επιλεγεί κατηγορία
+    if (!selectedCategory || selectedCategory === '') {
+        showMessage('Παρακαλώ επιλέξτε μια κατηγορία!', 'error');
         return;
     }
 
