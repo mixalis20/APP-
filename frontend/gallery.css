@@ -379,7 +379,8 @@ body.dark-mode {
 .dark-mode .card,
 .dark-mode input,
 .dark-mode textarea,
-.dark-mode select {
+.dark-mode select,
+.dark-mode #addTagsButton{
   background-color: #1e1e1e;
   color: white;
   border: 1px solid #555;
@@ -395,6 +396,10 @@ body.dark-mode {
   background-color: #555;
 }
 
+.dark-mode #addTagsButton:hover {
+  background-color: #555;
+}
+
 .dark-mode .modal-content {
   background-color: #222;
   color: white;
@@ -405,6 +410,7 @@ body.dark-mode {
   background-color: #222;
   border: 5px solid #444;
 }
+
 
 .dark-mode .navbar ul li a {
   background-color: #2c2c2c;
