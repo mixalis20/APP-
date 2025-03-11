@@ -433,6 +433,7 @@ body.dark-mode {
   font-weight: bold;
   opacity: 0;
   transition: top 0.5s ease, opacity 0.5s ease;
+  z-index: 9999;
 }
 
 /* Χρωματιστά μηνύματα ανάλογα με τον τύπο */
