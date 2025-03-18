@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/frontend/login.css">
+</head>
+<body>
+    <div id="messageBox" class="message-box" style="display: none;"></div>
+
+    <!-- Sign Up Form -->
+    <div class="wrapper">
+        <div class="form-box signup">
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <div class="input-box">
+                    <span class="icon"></span>
+                    <input type="text" id="username" name="username" required>
+                    <label>Username</label>
+                </div>
+               
+                <div class="input-box">
+                    <span class="icon"></span>
+                    <input type="password" id="password" name="password" required>
+                    <label>Password</label>
+                </div>
+                <button type="submit" class="btn">Sign Up</button>
+                <div id="error-message" style="color: red; display: none; text-align: center; margin-top: 10px;">
+                    <p>Registration failed. Try again.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/frontend/user.js" type="module"></script>
+</body>
+</html>

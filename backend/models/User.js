@@ -7,14 +7,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true }, // Ο κωδικός είναι υποχρεωτικός
 });
 
-// Middleware για κρυπτογράφηση του κωδικού πριν την αποθήκευση
-userSchema.pre('save', async function (next) {
-  if (this.isModified('password') || this.isNew) {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-  }
-  next();
-});
+
 
 // Μέθοδος για επαλήθευση του κωδικού
 userSchema.methods.isPasswordValid = async function (password) {

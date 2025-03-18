@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-
+//const bcrypt = require('bcryptjs'); // Χρήση bcryptjs αντί για bcrypt
 
 
 // Εισαγωγή μοντέλων
@@ -34,27 +34,38 @@ mongoose
  * Διαδρομές Εγγραφής και Σύνδεσης
  */
 
-// Εγγραφή χρήστη
-app.post('/api/auth/register', async (req, res) => {
-  const { username, password } = req.body;
 
+
+
+// Endpoint για δημιουργία χρήστη
+// ΔΕΝ χρειάζεται πλέον το bcryptjs
+// const bcrypt = require('bcryptjs'); 
+
+app.post('/users', async (req, res) => {
   try {
-    // Ελέγχουμε αν ο χρήστης υπάρχει ήδη
+    const { username, password } = req.body;
+
+    console.log("Λήφθηκαν δεδομένα:", username, password); // Debugging
+
+    // Έλεγχος αν ο χρήστης υπάρχει ήδη
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.status(400).json({ error: 'Username already exists' });
+      return res.status(400).json({ error: "Το όνομα χρήστη υπάρχει ήδη." });
     }
 
-    // Δημιουργούμε νέο χρήστη χωρίς κρυπτογράφηση του κωδικού
+    // Δημιουργία χρήστη (χωρίς κρυπτογράφηση)
     const newUser = new User({ username, password });
     await newUser.save();
 
-    res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Failed to create user' });
+    res.status(201).json({ message: "Ο χρήστης δημιουργήθηκε επιτυχώς!" });
+  } catch (err) {
+    console.error("❌ Σφάλμα στον server:", err);
+    res.status(500).json({ error: "Σφάλμα στον διακομιστή." });
   }
 });
+
+
+
 
 app.post('/api/auth/users', async (req, res) => {
   const { username, password } = req.body;
