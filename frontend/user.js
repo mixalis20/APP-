@@ -1,3 +1,9 @@
+function redirectToHomePage() {
+    window.location.href = "login.html"; // ✅ Ανακατεύθυνση στην αρχική σελίδα
+  }
+
+
+
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
     e.preventDefault();
   
@@ -15,7 +21,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.error || 'Κάτι πήγε στραβά.');
+        redirectToHomePage();
       }
   
       alert('Ο χρήστης δημιουργήθηκε!');

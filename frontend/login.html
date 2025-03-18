@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/frontend/login.css">
+    <link rel="stylesheet" href="/frontend/user.css">
 </head>
 <body>
     <div id="messageBox" class="message-box" style="display: none;"></div>
@@ -17,12 +18,12 @@
                 <div class="input-box">
                     <span class="icon"></span>
                     <input type="text" id="username" name="username" required>
-                    <label>Username</label>
+                    <label>Username:</label>
                 </div>
                 <div class="input-box">
                     <span class="icon"></span>
                     <input type="password" id="password" name="password" required>
-                    <label>Password</label>
+                    <label>Password:</label>
                 </div>
                 <div class="remember-forgot">
                     <label><input type="checkbox" name="remember">Remember me</label>
@@ -31,6 +32,9 @@
                 <button type="submit" class="btn">Login</button>
                 <div id="error-message" style="color: red; display: none; text-align: center; margin-top: 10px;">
                     <p>User not found. Please check your credentials.</p>
+                </div>
+                <div class="sign-up">
+                    <a href="user.html">Sign Up?</a>
                 </div>
             </form>
         </div>
