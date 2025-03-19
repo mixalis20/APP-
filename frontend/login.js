@@ -130,3 +130,29 @@ if (typeof jwt_decode === 'undefined') {
     console.log('Η βιβλιοθήκη jwt_decode έχει φορτωθεί επιτυχώς.');
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const rememberMeCheckbox = document.querySelector("input[name='remember']");
+
+    // Ελέγχουμε αν υπάρχουν αποθηκευμένα στοιχεία
+    if (localStorage.getItem("rememberMe") === "true") {
+        usernameInput.value = localStorage.getItem("savedUsername") || "";
+        passwordInput.value = localStorage.getItem("savedPassword") || "";
+        rememberMeCheckbox.checked = true;
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+        if (rememberMeCheckbox.checked) {
+            // Αποθηκεύουμε τα στοιχεία του χρήστη
+            localStorage.setItem("rememberMe", "true");
+            localStorage.setItem("savedUsername", usernameInput.value);
+            localStorage.setItem("savedPassword", passwordInput.value);
+        } else {
+            // Διαγράφουμε τα στοιχεία αν ο χρήστης δεν θέλει αποθήκευση
+            localStorage.removeItem("rememberMe");
+            localStorage.removeItem("savedUsername");
+            localStorage.removeItem("savedPassword");
+        }
+    });
+});

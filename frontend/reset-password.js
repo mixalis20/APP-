@@ -1,6 +1,27 @@
+function showMessage(message, type = 'info') {
+    const messageBox = document.getElementById('messageBox');
+    
+    messageBox.textContent = message;
+    messageBox.className = `message-box ${type}`;
+    messageBox.style.display = 'block';
+    
+    // Κινούμενη εμφάνιση
+    messageBox.classList.add('show');
+
+    // Αυτόματο κλείσιμο μετά από 3 δευτερόλεπτα
+    setTimeout(() => {
+        messageBox.classList.remove('show'); // Απόκρυψη με animation
+        setTimeout(() => {
+            messageBox.style.display = 'none';
+        }, 500);
+    }, 6000);
+}
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     const passwordSection = document.getElementById("password-section");
-    const messageBox = document.getElementById("messageBox"); // Προσθήκη για εμφάνιση μηνυμάτων
     let currentUser = "";
 
     window.checkUser = async function() {
@@ -18,16 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentUser = username;
                 passwordSection.classList.remove("hidden");
                 
-                // Προβολή μηνύματος επιτυχίας
-                messageBox.innerText = `User "${username}" found! You can reset the password.`;
-                messageBox.style.display = "block";
-                messageBox.style.color = "green";
+                showMessage('Ο Χρήστης βρεθηκε με επιτυχλια!. Μπορειτε να αλλαξετε κωδικο!', 'success');
             } else {
-                alert("User not found!");
+                showMessage('Ο Χρήστης δεν βρέθηκε.', 'error');
             }
         } catch (error) {
             console.error("Error checking user:", error);
-            alert("Server error. Try again later.");
+            showMessage('Αποτυχία σύνδεσης με τον server.', 'warning');
         }
     };
 });
@@ -51,13 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.exists) {
                 currentUser = username;
                 passwordSection.classList.remove("hidden");
-                alert("User found! You can reset the password.");
+                showMessage('Ο Χρήστης βρεθηκε με επιτυχλια!. Μπορειτε να αλλαξετε κωδικο!', 'success');
             } else {
-                alert("User not found!");
+                showMessage('Ο Χρήστης δεν βρέθηκε!.', 'error');
             }
         } catch (error) {
             console.error("Error checking user:", error);
-            alert("Server error. Try again later.");
+            showMessage('Αποτυχία σύνδεσης με τον server.', 'warning');
         }
     };
 
@@ -65,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const newPassword = document.getElementById("new-password").value;
         
         if (newPassword.length < 6) {
-            alert("Password must be at least 6 characters long.");
+            showMessage('Προσοχη ο κωδικος πρεπει να εχει 6 χαρακτηρες!!', 'warning');
             return;
         }
 
@@ -79,14 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             if (data.success) {
-                alert("Password updated successfully!");
                 passwordSection.classList.add("hidden");
+                window.location.href = "login.html";
             } else {
-                alert("Error updating password.");
+                showMessage('Σφαλμα κατα την αλλαγη κωδικου!', 'error');
             }
         } catch (error) {
             console.error("Error resetting password:", error);
-            alert("Server error. Try again later.");
+            showMessage('Αποτυχία σύνδεσης με τον server.', 'warning');
         }
     };
 });
