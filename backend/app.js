@@ -64,8 +64,42 @@ app.post('/users', async (req, res) => {
   }
 });
 
+app.post('/api/users', async (req, res) => {
+  try {
+    const { username } = req.body;
+    const user = await User.findOne({ username });
+
+    if (user) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (err) {
+    console.error("Error checking user:", err);
+    res.status(500).json({ error: "Server error." });
+  }
+});
 
 
+app.post('/api/reset-password', async (req, res) => {
+  const { username, newPassword } = req.body;
+
+  try {
+      const user = await User.findOne({ username });
+
+      if (!user) {
+          return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      user.password = newPassword; // 🚨 Καλύτερα να χρησιμοποιηθεί bcrypt για ασφάλεια!
+      await user.save();
+
+      res.json({ success: true, message: 'Password updated successfully' });
+  } catch (error) {
+      console.error('Error updating password:', error);
+      res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
 
 app.post('/api/auth/users', async (req, res) => {
   const { username, password } = req.body;
